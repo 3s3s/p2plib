@@ -1,6 +1,7 @@
 'use strict';
 
 const server = require("./source/server/server")
+const reqHandler = require("./source/server/reqHandler")
 const peers = require("./source/server/peers")
 const utils = require("./source/utils")
 
@@ -45,7 +46,7 @@ exports.broadcastMessage = function(message)
     if (!message.params["TTL"]) message.params["TTL"] = 3;
     if (!message.params["uid"]) message.params["uid"] = peers.createUID();
             
-    server.broadcastMessage(require("ip").address(), message);
+    reqHandler.broadcastMessage(require("ip").address(), message);
 
     return message.params["uid"];
 }

@@ -5,15 +5,20 @@ const g_constants = require('../constants');
 const WebSocketServer = require('isomorphic-ws').Server;
 
 const readline = require('readline');
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
 
-rl.on('line', line => {
-    require("./terminal").Handle(line);
-})
+try {
+    readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+        terminal: false
+    }).on('line', line => {
+        require("./terminal").Handle(line);
+    })
+
+}
+catch(e) {
+    console.error(e.message)
+}
 
 exports.StartServer = function(P2P_protocol = null)
 {
