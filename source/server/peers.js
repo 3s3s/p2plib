@@ -23,9 +23,19 @@ exports.Init = async function(P2P_protocol = null)
 {
     g_P2P_protocol = P2P_protocol;
 
-    if (P2P_protocol && !P2P_protocol.STARTED)
-        return StopConnections();
+    if (P2P_protocol)
+    {
+        if (!P2P_protocol["getPeers"]) P2P_protocol["getPeers"] = require("../server/protocol/getPeers");
+        if (!P2P_protocol["getPort"]) P2P_protocol["getPort"] = require("../server/protocol/getPort");
+        if (!P2P_protocol["listPeers"]) P2P_protocol["listPeers"] = require("../server/protocol/listPeers");
+        
+        if (!P2P_protocol.STARTED)
+            return StopConnections();
+    }
 
+    if (g_ConnectionsInterval)
+        return;
+ 
     ConnectNewPeers();
 
     g_ConnectionsInterval = setInterval(() => {
@@ -82,22 +92,24 @@ async function ConnectNewPeers()
         Connect(g_constants.seeders[i]);
 }
 
-function QueryNewPeers()
+exports.createUID = function()
 {
     const uid = utils.createUID();
     g_sentUIDS[uid] = {time: Date.now()};
 
-    reqHandler.broadcastMessage("", {request: "getPeers", params: {uid: uid, TTL: 3} })
+    return uid;
+}
+
+function QueryNewPeers()
+{
+    reqHandler.broadcastMessage("", {request: "getPeers", params: {uid: exports.createUID(), TTL: 3} })
 
     ClearMemory()
 }
 
 exports.GetPort = function(ws)
 {
-    const uid = utils.createUID();
-    g_sentUIDS[uid] = {time: Date.now()};
-
-    const responce = {request: "getPort", params: {uid: uid, TTL: 0, address: ws["remote_address"]} };
+    const responce = {request: "getPort", params: {uid: exports.createUID(), TTL: 0, address: ws["remote_address"]} };
 
     if (ws.readyState === WebSocket.OPEN) 
         return ws.send(JSON.stringify(responce));    

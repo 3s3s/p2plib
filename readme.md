@@ -8,11 +8,24 @@ npm i p2plib
 
 Usage:
 
-1. Start P2P server
+Start P2P server (will not work in browser)
 
 ```
 require("p2plib").StartServer();
 ```
+
+Start P2P client (will work in browser)
+
+```
+require("p2plib").StartPeer();
+```
+
+Stop P2P client 
+
+```
+require("p2plib").StartPeer({STARTED: false});
+```
+
 
 
 Step-by-step build instructions:

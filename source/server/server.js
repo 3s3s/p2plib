@@ -15,10 +15,10 @@ rl.on('line', line => {
     require("./terminal").Handle(line);
 })
 
-exports.StartServer = function()
+exports.StartServer = function(P2P_protocol = null)
 {
     require("./database").Init();
-    require("./peers").Init();
+    require("./peers").Init(P2P_protocol);
 
     console.log("This Machine IP address: " + require("ip").address())
 

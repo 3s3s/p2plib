@@ -1,26 +1,45 @@
 {
-  "name": "p2plib",
-  "version": "1.0.0",
-  "description": "Easy to use P2P library for any projects",
-  "main": "main.js",
+  "_from": "p2plib",
+  "_id": "p2plib@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-E7SEEPI3m1pKXpc9nHESF7oGBftJT1H5dW/tY6gCNqV5ESf4z3PhIgEB4gjlIr3xl0EkkbIcSEU7KTH4GzmcNw==",
+  "_location": "/p2plib",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "p2plib",
+    "name": "p2plib",
+    "escapedName": "p2plib",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/p2plib/-/p2plib-1.0.0.tgz",
+  "_shasum": "c5527b5c78a8ce08b43890ec6543ab2a6fdffb80",
+  "_spec": "p2plib",
+  "_where": "C:\\Users\\Papa\\YandexDisk\\bitcoin\\monero\\extension\\blockchaindata",
+  "author": {
+    "name": "kzv"
+  },
+  "bugs": {
+    "url": "https://github.com/3s3s/p2plib/issues"
+  },
+  "bundleDependencies": false,
   "dependencies": {
     "ip": "^1.1.5",
     "isomorphic-ws": "^4.0.1",
     "sqlite3": "^5.0.2",
     "ws": "^8.4.2"
   },
+  "deprecated": false,
+  "description": "Easy to use P2P library for any projects",
   "devDependencies": {},
-  "scripts": {
-    "compile": "browserify ./source/browser/main.js > ./browser/js/main.js",
-    "compile_debug": "browserify --debug ./source/browser/main.js > ./browser/js/main.js",
-    "server": "node ./source/server/main.js",
-    "daemon": "forever -s start ./source/server/main.js",
-    "daemon_stop": "forever stop ./source/server/main.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/3s3s/p2plib.git"
-  },
+  "homepage": "https://github.com/3s3s/p2plib#readme",
   "keywords": [
     "p2p",
     "client",
@@ -28,10 +47,19 @@
     "browser",
     "library"
   ],
-  "author": "kzv",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/3s3s/p2plib/issues"
+  "main": "main.js",
+  "name": "p2plib",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3s3s/p2plib.git"
   },
-  "homepage": "https://github.com/3s3s/p2plib#readme"
+  "scripts": {
+    "compile": "browserify ./source/browser/main.js > ./browser/js/main.js",
+    "compile_debug": "browserify --debug ./source/browser/main.js > ./browser/js/main.js",
+    "daemon": "forever -s start ./source/server/main.js",
+    "daemon_stop": "forever stop ./source/server/main.js",
+    "server": "node ./source/server/main.js"
+  },
+  "version": "1.0.0"
 }

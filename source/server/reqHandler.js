@@ -79,11 +79,7 @@ exports.handleConnection = function(ws)
         }
 
         let client = {};
-        try {
-            client = JSON.parse(data);
-        } catch(e) {
-            return;    
-        }
+        try { client = JSON.parse(data);} catch(e) { return; }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
