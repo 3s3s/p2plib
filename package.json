@@ -1,0 +1,37 @@
+{
+  "name": "p2plib",
+  "version": "1.0.0",
+  "description": "Easy to use P2P library for any projects",
+  "main": "main.js",
+  "dependencies": {
+    "ip": "^1.1.5",
+    "isomorphic-ws": "^4.0.1",
+    "sqlite3": "^5.0.2",
+    "ws": "^8.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "compile": "browserify ./source/browser/main.js > ./browser/js/main.js",
+    "compile_debug": "browserify --debug ./source/browser/main.js > ./browser/js/main.js",
+    "server": "node ./source/server/main.js",
+    "daemon": "forever -s start ./source/server/main.js",
+    "daemon_stop": "forever stop ./source/server/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3s3s/p2plib.git"
+  },
+  "keywords": [
+    "p2p",
+    "client",
+    "server",
+    "browser",
+    "library"
+  ],
+  "author": "kzv",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3s3s/p2plib/issues"
+  },
+  "homepage": "https://github.com/3s3s/p2plib#readme"
+}
