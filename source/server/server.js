@@ -6,7 +6,8 @@ const WebSocketServer = require('isomorphic-ws').Server;
 
 const readline = require('readline');
 
-try {
+if (typeof window !== 'object')
+{
     readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -14,10 +15,6 @@ try {
     }).on('line', line => {
         require("./terminal").Handle(line);
     })
-
-}
-catch(e) {
-    console.error(e.message)
 }
 
 exports.StartServer = function(P2P_protocol = null)

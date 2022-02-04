@@ -10,6 +10,12 @@ exports.StartServer = function(P2P_protocol = {STARTED: true})
 {
     if (g_ServerStarted)
         return;
+    
+    if (typeof window === 'object')
+    {
+        console.error('Could not to start server in browser')
+        return;
+    }
 
     if (!P2P_protocol["STARTED"]) P2P_protocol["STARTED"] = true;
     
