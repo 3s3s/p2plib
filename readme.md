@@ -1,6 +1,21 @@
 # P2P client and server in node.js
 
-Step-by-step install instructions:
+Install from npm:
+
+```
+npm i p2plib
+```
+
+Usage:
+
+1. Start P2P server
+
+```
+require("p2plib").StartServer();
+```
+
+
+Step-by-step build instructions:
 
 1. Install nvm
 
@@ -42,7 +57,7 @@ Instead of running the server, you can compile the code for browser:
 npm run compile
 ```
 
-The atomicswaps/browser directory will contain the code for the browser extension. It is compatible with Firefox and Chrome browsers.
+The p2plib/browser directory will contain the code for the browser extension. It is compatible with Firefox and Chrome browsers.
 
 Also you can run server as a background process (daemon)
 
