@@ -19,7 +19,7 @@ exports.StartServer = function(P2P_protocol = {STARTED: true})
 
     if (!P2P_protocol["STARTED"]) P2P_protocol["STARTED"] = true;
     
-    server.StartServer();
+    server.StartServer(P2P_protocol);
     g_ServerStarted = true;
 }
 
