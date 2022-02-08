@@ -136,14 +136,14 @@ exports.SavePeers = function(uid, list)
 
     for (let i=0; i<Math.min(10, list.length); i++)
     {
-        Connect(unescape(list[i]));
+        Connect(unescape(list[i].address));
 
         if (typeof window !== 'undefined')
-            utils.SavePeer(list[i], false);
+            utils.SavePeer(list[i].address, false);
     }
 
-    if (list.length == 1 && reqHandler.IsConnected(list[0]))
-        utils.SavePeer(list[0]); 
+    if (list.length == 1 && reqHandler.IsConnected(list[0].address))
+        utils.SavePeer(list[0].address); 
 }
 
 exports.IsConnected = function(peer)
