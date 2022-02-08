@@ -4,11 +4,9 @@ const g_constants = require('../constants');
 
 const WebSocketServer = require('isomorphic-ws').Server;
 
-const readline = require('readline');
-
 if (typeof window !== 'object')
 {
-    readline.createInterface({
+    require('readline').createInterface({
         input: process.stdin,
         output: process.stdout,
         terminal: false
@@ -25,8 +23,8 @@ exports.StartServer = function(P2P_protocol = null)
     console.log("This Machine IP address: " + require("ip").address())
 
     const httpsServer = 
-        require('https').createServer(g_constants.SSL_options)
-        .listen(g_constants.my_portSSL, () => {
+        require('https').createServer(P2P_protocol && P2P_protocol.SSL_options ? P2P_protocol.SSL_options : g_constants.SSL_options)
+        .listen(P2P_protocol && P2P_protocol.my_portSSL ? P2P_protocol.my_portSSL : g_constants.my_portSSL, () => {
         console.log("SSL server listening on port "+g_constants.my_portSSL);
     });
 
@@ -59,7 +57,9 @@ exports.StartServer = function(P2P_protocol = null)
 
         if (!ws["isAlive"]) return ws.terminate();
 
-        if (connectedToMe > g_constants.MAX_CONNECTIONS)
+        const maxConnections = P2P_protocol && P2P_protocol.MAX_CONNECTIONS ? P2P_protocol.MAX_CONNECTIONS : g_constants.MAX_CONNECTIONS;
+        
+        if (connectedToMe > maxConnections)
             ws["connectedToMe"] = connectedToMe;
 
         console.log("Connected remote address: " + req.socket.remoteAddress)
