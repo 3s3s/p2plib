@@ -76,6 +76,9 @@ exports.GetPeersFromDB = function(WHERE)
 let g_LastSavedTime = 0;
 exports.SavePeer = async function(peer, connected = true, need_reverse = true)
 {
+  if (peer.toString().indexOf(":") == -1)
+    return;
+
   if (Date.now() - g_LastSavedTime < 1000)
     return setTimeout(exports.SavePeer, 1000, peer, connected);
 

@@ -19,17 +19,17 @@ exports.IsOwnUID = function(uid)
 
 
 let g_P2P_protocol = null;
-exports.Init = async function(P2P_protocol = null)
+exports.Init = async function(P2P_protocol)
 {
     g_P2P_protocol = P2P_protocol;
 
-    if (P2P_protocol)
+    if (g_P2P_protocol)
     {
-        if (!P2P_protocol["getPeers"]) P2P_protocol["getPeers"] = require("../server/protocol/getPeers");
-        if (!P2P_protocol["getPort"]) P2P_protocol["getPort"] = require("../server/protocol/getPort");
-        if (!P2P_protocol["listPeers"]) P2P_protocol["listPeers"] = require("../server/protocol/listPeers");
+        if (!g_P2P_protocol["getPeers"]) g_P2P_protocol["getPeers"] = require("../server/protocol/getPeers");
+        if (!g_P2P_protocol["getPort"]) g_P2P_protocol["getPort"] = require("../server/protocol/getPort");
+        if (!g_P2P_protocol["listPeers"]) g_P2P_protocol["listPeers"] = require("../server/protocol/listPeers");
         
-        if (!P2P_protocol.STARTED)
+        if (!g_P2P_protocol.STARTED)
             return StopConnections();
     }
 
@@ -76,7 +76,7 @@ exports.HandleMessage = function(client)
     if (g_P2P_protocol && g_P2P_protocol.STARTED)
         return g_P2P_protocol[client.request].HandleMessage(client);
 
-    return require("./protocol/"+client.request).HandleMessage(client)
+    return; //require("../server/protocol/"+client.request).HandleMessage(client)
 }
 
 async function ConnectNewPeers()
