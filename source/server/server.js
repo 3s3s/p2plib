@@ -15,7 +15,7 @@ if (typeof window !== 'object')
     })
 }
 
-exports.StartServer = function(P2P_protocol = null)
+exports.StartServer = function(P2P_protocol)
 {
     require("./database").Init();
     require("./peers").Init(P2P_protocol);
@@ -23,8 +23,8 @@ exports.StartServer = function(P2P_protocol = null)
     console.log("This Machine IP address: " + require("ip").address())
 
     const httpsServer = 
-        require('https').createServer(P2P_protocol && P2P_protocol.SSL_options ? P2P_protocol.SSL_options : g_constants.SSL_options)
-        .listen(P2P_protocol && P2P_protocol.my_portSSL ? P2P_protocol.my_portSSL : g_constants.my_portSSL, () => {
+        require('https').createServer(P2P_protocol.SSL_options || g_constants.SSL_options)
+        .listen(P2P_protocol.my_portSSL || g_constants.my_portSSL, () => {
         console.log("SSL server listening on port "+g_constants.my_portSSL);
     });
 
@@ -57,8 +57,8 @@ exports.StartServer = function(P2P_protocol = null)
 
         if (!ws["isAlive"]) return ws.terminate();
 
-        const maxConnections = P2P_protocol && P2P_protocol.MAX_CONNECTIONS ? P2P_protocol.MAX_CONNECTIONS : g_constants.MAX_CONNECTIONS;
-        
+        const maxConnections = P2P_protocol.MAX_CONNECTIONS || g_constants.MAX_CONNECTIONS;
+
         if (connectedToMe > maxConnections)
             ws["connectedToMe"] = connectedToMe;
 

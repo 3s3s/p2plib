@@ -1,9 +1,8 @@
 'use strict';
 
-const WebSocket = require('isomorphic-ws');
-const g_constants = require("../../constants")
+const p2p = require("../../../main")
 
-exports.HandleMessage = function(ws, client)
+exports.HandleMessage = function(client)
 {
     if (typeof window !== 'undefined') return;
 
@@ -20,13 +19,9 @@ exports.HandleMessage = function(ws, client)
             }
         }
 
-        const responce = {request: "listPeers", params: {uid: client.params.uid, TTL: 0, list: [address+":"+g_constants.my_portSSL] } };
+        const responce = {request: "listPeers", params: {uid: client.params.uid, TTL: 0, list: [address+":"+p2p.GetListenPort()] } };
         
-        //console.log('getPort from '+ws["remote_address"]+"  answer: "+address+":"+g_constants.my_portSSL)
-
-        if (ws.readyState === WebSocket.OPEN && responce.params.list.length > 0) 
-            return ws.send(JSON.stringify(responce));    
-
+        p2p.broadcastMessage(responce) 
     }
     return;     
 }
