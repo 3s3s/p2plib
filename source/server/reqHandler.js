@@ -104,8 +104,8 @@ exports.handleConnection = function(ws)
             peers.HandleMessage(ws, client);
         }
         catch(e) {
-            console.error(e.message);
-            console.error(e.stack);
+//            console.error(e.message);
+//            console.error(e.stack);
         }
     };   
 }
