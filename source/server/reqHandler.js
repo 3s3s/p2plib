@@ -75,7 +75,7 @@ exports.handleConnection = function(ws)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
-        if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1) return;
+        if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //Do not responce more than one time for one "uid" if it is not our own.
