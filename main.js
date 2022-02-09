@@ -52,7 +52,7 @@ exports.broadcastMessage = function(message)
     if (!message.request || !message.request.length) return 0;
     if (!message.params) return 0;
     
-    if (!message.params["TTL"]) message.params["TTL"] = 3;
+    if (!message.params["TTL"] && message.params["TTL"] !== 0) message.params["TTL"] = 3;
     if (!message.params["uid"]) message.params["uid"] = peers.createUID();
             
     reqHandler.broadcastMessage(require("ip").address(), message);
