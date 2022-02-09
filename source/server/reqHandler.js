@@ -40,8 +40,6 @@ exports.handleConnection = function(ws)
     }
     ws["isAlive"] = true;
  
-    peers.GetPort(ws);
- 
     if (typeof window === 'undefined')
     {
         ws.on('pong', () => {

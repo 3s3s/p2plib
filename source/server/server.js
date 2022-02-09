@@ -66,6 +66,8 @@ exports.StartServer = function(P2P_protocol)
         
         ws["remote_address"] = req.socket.remoteAddress;
 
+        require("./peers").GetPort(ws);
+
         require('./reqHandler.js').handleConnection(ws);
 
     }).on('close', () => {
