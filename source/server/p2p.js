@@ -1,6 +1,7 @@
 'use strict';
 
 const p2p = require("../../main")
+const peers = require("./peers")
 
 exports.HandleMessage = async function(client)
 {
@@ -24,6 +25,6 @@ exports.HandleMessage = async function(client)
                 break;
             }
         }    
-        return p2p.broadcastMessage({request: "listPeers", params: {uid: client.params.uid, TTL: 0, list: [address+":"+p2p.GetListenPort()] } });
+        return p2p.broadcastMessage({request: "p2p", params: {commsnd: "listPeers", uid: client.params.uid, TTL: 0, list: [address+":"+p2p.GetListenPort()] } });
     }     
 }

@@ -77,13 +77,7 @@ exports.handleConnection = function(ws)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
-        if (!client.request) return;
-        if (!client.params) return;
-        if (!client.params.uid) return;
-        if (client.params.TTL*1 > 4)
-            return SendError(ws, client.params.uid, 'Error: TTL is too big. Should be less than 4');
-        if (client.params.TTL*1 < 0)
-            return SendError(ws, client.params.uid, 'Error: TTL is too small. Should be more than 0');
+        if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //Do not responce more than one time for one "uid" if it is not our own.
