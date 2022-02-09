@@ -5,19 +5,13 @@ const utils = require("../utils")
 const g_constants = require("../constants")
 const peers = require("./peers")
 
-/* WebSocket message JSON format: {request: "getPeers", params: {uid: "qwert", TTL: 3, ...} } 
+/* WebSocket message JSON format: {request: "p2p", params: {command: "getPeers", uid: "qwert", TTL: 3, ...} } 
 
-Supported commands:
-getPeers - requesting peers from P2P network. Example: {request: "getPeers", params: {uid: "qwert", TTL: 3} } 
-listPeers - returned list of peers. Example: {request: "listPeers", params: {uid: "qwert", TTL: 3, list: [1.1.1.1:10443, 1.2.3.4:10443, ...] } } 
-getPort - request a listen port for remote connected client (with known IP address). Example: {request: "getPort", params: {uid: "qwert", TTL: 0, address: 1.2.3.4} } 
+Supported p2p commands:
+getPeers - requesting peers from P2P network. Example: {request: "p2p", params: {command: "getPeers", uid: "qwert", TTL: 3, ...} 
+listPeers - returned list of peers. Example: {request: "p2p", params: {command: "listPeers", uid: "qwert", TTL: 3, list: [1.1.1.1:10443, 1.2.3.4:10443, ...] } } 
+getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
 */
-
-function SendError(ws, uid, message)
-{
-   if (ws.readyState === WebSocket.OPEN) 
-        ws.send(JSON.stringify({request: 'error', params: {uid: uid, TTL: 0, message: message} }));
-}
 
 let g_knownUIDS = {};
 function IsKnownUID(uid)
@@ -84,7 +78,6 @@ exports.handleConnection = function(ws)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
         if (!client.request) return;
-        if (client.request == 'error') return;
         if (!client.params) return;
         if (!client.params.uid) return;
         if (client.params.TTL*1 > 4)

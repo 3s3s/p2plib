@@ -10,14 +10,10 @@ let g_P2P_protocol = {STARTED: false}
 
 exports.StartServer = function(P2P_protocol = {STARTED: true})
 {
-    if (g_P2P_protocol.STARTED)
-        return;
+    if (g_P2P_protocol.STARTED) return;
     
     if (typeof window === 'object')
-    {
-        console.error('Could not to start server in browser')
-        return;
-    }
+        return console.error('Could not to start server in browser')
 
     if (!P2P_protocol["STARTED"]) P2P_protocol["STARTED"] = true;
     
@@ -52,12 +48,9 @@ exports.GetLastSavedPeers = function()
 
 exports.broadcastMessage = function(message)
 {
-    if (!message)
-        return 0;
-    if (!message.request || !message.request.length)
-        return 0;
-    if (!message.params)
-        return 0;
+    if (!message) return 0;
+    if (!message.request || !message.request.length) return 0;
+    if (!message.params) return 0;
     
     if (!message.params["TTL"]) message.params["TTL"] = 3;
     if (!message.params["uid"]) message.params["uid"] = peers.createUID();

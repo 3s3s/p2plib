@@ -25,9 +25,7 @@ exports.Init = async function(P2P_protocol)
 
     if (g_P2P_protocol)
     {
-        if (!g_P2P_protocol["getPeers"]) g_P2P_protocol["getPeers"] = require("../server/protocol/getPeers");
-        if (!g_P2P_protocol["getPort"]) g_P2P_protocol["getPort"] = require("../server/protocol/getPort");
-        if (!g_P2P_protocol["listPeers"]) g_P2P_protocol["listPeers"] = require("../server/protocol/listPeers");
+        if (!g_P2P_protocol["p2p"]) g_P2P_protocol["p2p"] = require("./p2p");
         
         if (!g_P2P_protocol.STARTED)
             return StopConnections();
@@ -75,8 +73,6 @@ exports.HandleMessage = function(client)
 {
     if (g_P2P_protocol && g_P2P_protocol.STARTED)
         return g_P2P_protocol[client.request].HandleMessage(client);
-
-    return; //require("../server/protocol/"+client.request).HandleMessage(client)
 }
 
 async function ConnectNewPeers()
