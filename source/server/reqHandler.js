@@ -27,7 +27,8 @@ function IsKnownUID(uid)
     if (g_knownUIDS[uid])
         return true;
 
-    g_knownUIDS[uid] = Date.now();    
+    g_knownUIDS[uid] = Date.now();   
+    return false; 
 }
 
 exports.handleConnection = function(ws)
@@ -79,7 +80,7 @@ exports.handleConnection = function(ws)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //Do not responce more than one time for one "uid" if it is not our own.
-        if (IsKnownUID(client.params.uid) && !peers.IsOwnUID(client.params.uid)) return;     
+        if (IsKnownUID(client.params.uid+client.request) && !peers.IsOwnUID(client.params.uid)) return;     
 
         client.params.TTL = client.params.TTL*1 - 1;
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
