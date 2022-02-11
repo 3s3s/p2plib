@@ -13,24 +13,6 @@ listPeers - returned list of peers. Example: {request: "p2p", params: {command: 
 getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
 */
 
-let g_knownUIDS = {};
-function IsKnownUID(uid)
-{
-    let newest = {}
-    for (let key in g_knownUIDS)
-    {
-        if (g_knownUIDS[key] > Date.now() - 60*1000)
-            newest[key] = g_knownUIDS[key];
-    }
-    g_knownUIDS = newest;
-
-    if (g_knownUIDS[uid])
-        return true;
-
-    g_knownUIDS[uid] = Date.now();    
-    return false;
-}
-
 exports.handleConnection = function(ws)
 {
     if (utils.IsBockedAddress(ws["remote_address"]))
@@ -78,9 +60,6 @@ exports.handleConnection = function(ws)
         //Check request syntax
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        //Do not responce more than one time for one "uid" if it is not our own.
-        if (IsKnownUID(client.request+client.params.uid) && !peers.IsOwnUID(client.params.uid)) return;     
 
         client.params.TTL = client.params.TTL*1 - 1;
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
