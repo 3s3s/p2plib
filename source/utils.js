@@ -45,17 +45,18 @@ exports.IsBockedAddress = function(ip)
 }
 
 
-exports.Hash160 = function(arg)
+exports.Hash160 = function(arg, encode = "hex")
 {
   const str = arg+"";
   
-  const buffer = str.length % 2 != 0 ? Buffer.from(str) : Buffer.from(str, "hex");
+  const buffer = encode == "hex" ? Buffer.from(str, "hex") : Buffer.from(str);
+
   return g_crypto.createHash("ripemd160").update(buffer).digest('hex')
 }
 
 exports.createUID = function()
 {
-  return exports.Hash160(Math.random()+Date.now())
+  return exports.Hash160(Math.random()+Date.now(), "")
 }
 
 exports.GetPeersFromDB = function(WHERE)
