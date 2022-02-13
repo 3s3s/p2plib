@@ -73,15 +73,13 @@ exports.broadcastMessage = function(_ip, _client)
 
     const currentMessage = g_Messages.shift();
 
-    if (Date.now() - currentMessage.time < 100)
-        return setTimeout(exports.broadcastMessage, 100, currentMessage.ip, currentMessage.client)
+    if (Date.now() - currentMessage.time < 1000)
+        return setTimeout(exports.broadcastMessage, 1000, currentMessage.ip, currentMessage.client)
 
     const ip = currentMessage.ip; 
     const client = currentMessage.client;
 
-    g_LastTimeBroadcasted = Date.now();
-
-    const data = JSON.stringify(client);
+     const data = JSON.stringify(client);
 
     const connectedFromMe = peers.GetPeers();
 
