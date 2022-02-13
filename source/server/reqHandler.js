@@ -85,7 +85,7 @@ exports.broadcastMessage = function(ip, client)
 
     g_constants.WEB_SOCKETS.clients.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN && ws["remote_address"] != ip)
-            ws.send(JSON.stringify(data));        
+            ws.send(data);        
     })
 }
 
