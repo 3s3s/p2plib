@@ -13,14 +13,8 @@ listPeers - returned list of peers. Example: {request: "p2p", params: {command: 
 getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
 */
 
-let g_LastHandledTime = 0;
 exports.handleConnection = function(ws)
 {
-    if (Date.now() - g_LastHandledTime < 1000)
-        return setTimeout(exports.handleConnection, 1000, ws);
-
-    g_LastHandledTime = Date.now();
-
     if (utils.IsBockedAddress(ws["remote_address"]))
     {
         ws.terminate();
@@ -75,15 +69,23 @@ exports.handleConnection = function(ws)
     };   
 }
 
+let g_LastTimeBroadcasted = 0;
 exports.broadcastMessage = function(ip, client)
 {
+    if (Date.now() - g_LastTimeBroadcasted < 1000)
+        return setTimeout(exports.broadcastMessage, 1000, ip, client)
+
+    g_LastTimeBroadcasted = Date.now();
+
     peers.broadcastMessage(ip, client);
 
     if (!g_constants.WEB_SOCKETS.clients) return;
 
+    const data = JSON.stringify(client);
+
     g_constants.WEB_SOCKETS.clients.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN && ws["remote_address"] != ip)
-            ws.send(JSON.stringify(client));        
+            ws.send(JSON.stringify(data));        
     })
 }
 

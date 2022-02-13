@@ -115,10 +115,12 @@ exports.GetPort = function(ws)
 
 exports.broadcastMessage = function(ip, messageObject)
 {
+    const data = JSON.stringify(messageObject);
+    
     for (let i=0; i<g_ConnectedPeers.length; i++)
     {
         if (g_ConnectedPeers[i].readyState === WebSocket.OPEN && g_ConnectedPeers[i]["remote_address"] != ip)
-             g_ConnectedPeers[i].send(JSON.stringify(messageObject));
+             g_ConnectedPeers[i].send(data);
     }
     return true;
 }
