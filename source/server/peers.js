@@ -113,15 +113,6 @@ exports.GetPort = function(ws)
     ClearMemory()
 }
 
-/*exports.broadcastMessage = function(ip, data)
-{
-    for (let i=0; i<g_ConnectedPeers.length; i++)
-    {
-        if (g_ConnectedPeers[i].readyState === WebSocket.OPEN && g_ConnectedPeers[i]["remote_address"] != ip)
-             g_ConnectedPeers[i].send(data);
-    }
-    return true;
-}*/
 exports.GetPeers = function()
 {
     return g_ConnectedPeers;
@@ -250,9 +241,13 @@ exports.GetConnectedPeers = function(ip = null)
     return list;
 }
 
+let g_lastClear = 0;
 let g_LastPeers = {peers: [], time: 0}
 exports.GetLastPeers = async function(ip = null)
 {
+    if (Date.now() - g_lastClear < 60*1000) return;
+    g_lastClear = Date.now();
+
     if (!ip) ip = require("ip").address();
 
     if (g_LastPeers.time > Date.now() - 60*1000)

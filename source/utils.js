@@ -3,6 +3,7 @@
 const g_crypto = require('crypto');
 const g_constants = require('./constants')
 
+let g_lastClear = 0;
 let g_ipMessageSpeed = {}
 exports.UpdateSpeed = function(ip)
 {
@@ -13,6 +14,9 @@ exports.UpdateSpeed = function(ip)
  
   //////////////////////////////////////////////////////////////////
   //Clear memory from old data
+  if (Date.now() - g_lastClear < 60*1000) return;
+  g_lastClear = Date.now();
+  
   let newest = {}
   for (let key in g_ipMessageSpeed)
   {
