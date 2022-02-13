@@ -45,8 +45,8 @@ exports.handleConnection = function(ws)
 
         ws["isAlive"] = true;
 
-        if (utils.GetSpeed(ws["remote_address"]) > 10)
-           return; // "Blocked too big message speed from host (must be no more that 10 messages per second)
+        if (utils.GetSpeed(ws["remote_address"]) > 100)
+           return; // "Blocked too big message speed from host (must be no more that 100 messages per second)
         
         utils.UpdateSpeed(ws["remote_address"]);      
 
@@ -69,12 +69,15 @@ exports.handleConnection = function(ws)
 let g_Messages = [];
 exports.broadcastMessage = function(_ip, _client)
 {
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Sent no more than one proadcast message per second
     g_Messages.push({ip: _ip, client: _client, time: Date.now});
 
     const currentMessage = g_Messages.shift();
 
     if (Date.now() - currentMessage.time < 1000)
         return setTimeout(exports.broadcastMessage, 1000, currentMessage.ip, currentMessage.client)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const ip = currentMessage.ip; 
     const client = currentMessage.client;
