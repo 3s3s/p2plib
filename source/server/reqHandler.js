@@ -51,8 +51,8 @@ exports.handleConnection = function(ws)
 
         const currentMessage = g_ClientMessages.shift();
     
-        if (Date.now() - g_ClientMessages.time < 100)
-            return setTimeout(ws.onmessage, 100, currentMessage.event)
+        if (Date.now() - g_ClientMessages.time < 1000)
+            return setTimeout(ws.onmessage, 1000, currentMessage.event)
 /////////////////////////////////////////////////////////////////////////////////////////
 
         if (utils.GetSpeed(ws["remote_address"]) > 100)
