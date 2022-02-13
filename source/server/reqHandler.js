@@ -13,8 +13,14 @@ listPeers - returned list of peers. Example: {request: "p2p", params: {command: 
 getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
 */
 
+let g_LastHandledTime = 0;
 exports.handleConnection = function(ws)
 {
+    if (Date.now() - g_LastHandledTime < 1000)
+        setTimeout(exports.handleConnection, 1000, ws);
+
+    g_LastHandledTime = Date.now();
+
     if (utils.IsBockedAddress(ws["remote_address"]))
     {
         ws.terminate();
