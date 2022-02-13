@@ -113,17 +113,20 @@ exports.GetPort = function(ws)
     ClearMemory()
 }
 
-exports.broadcastMessage = function(ip, messageObject)
+/*exports.broadcastMessage = function(ip, data)
 {
-    const data = JSON.stringify(messageObject);
-    
     for (let i=0; i<g_ConnectedPeers.length; i++)
     {
         if (g_ConnectedPeers[i].readyState === WebSocket.OPEN && g_ConnectedPeers[i]["remote_address"] != ip)
              g_ConnectedPeers[i].send(data);
     }
     return true;
+}*/
+exports.GetPeers = function()
+{
+    return g_ConnectedPeers;
 }
+
 
 exports.SavePeers = function(uid, list)
 {

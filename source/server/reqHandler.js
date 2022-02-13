@@ -48,10 +48,7 @@ exports.handleConnection = function(ws)
         utils.UpdateSpeed(ws["remote_address"]);
         
         if (utils.GetSpeed(ws["remote_address"]) > 10)
-        {
-            console.error("Blocked too big message speed from host: "+ws["remote_address"])
-            return;
-        }
+           return console.error("Blocked too big message speed from host: "+ws["remote_address"])
 
         let client = {};
         try { client = JSON.parse(data);} catch(e) { return; }
@@ -72,16 +69,22 @@ exports.handleConnection = function(ws)
 let g_LastTimeBroadcasted = 0;
 exports.broadcastMessage = function(ip, client)
 {
-    if (Date.now() - g_LastTimeBroadcasted < 1000)
-        return setTimeout(exports.broadcastMessage, 1000, ip, client)
+    if (Date.now() - g_LastTimeBroadcasted < 100)
+        return setTimeout(exports.broadcastMessage, 100, ip, client)
 
     g_LastTimeBroadcasted = Date.now();
 
-    peers.broadcastMessage(ip, client);
+    const data = JSON.stringify(client);
+
+    const connectedFromMe = peers.GetPeers();
+
+    for (let i=0; i<connectedFromMe.length; i++)
+    {
+        if (connectedFromMe[i].readyState === WebSocket.OPEN && connectedFromMe[i]["remote_address"] != ip)
+            connectedFromMe[i].send(data);
+    }
 
     if (!g_constants.WEB_SOCKETS.clients) return;
-
-    const data = JSON.stringify(client);
 
     g_constants.WEB_SOCKETS.clients.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN && ws["remote_address"] != ip)

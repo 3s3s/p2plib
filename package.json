@@ -1,6 +1,6 @@
 {
   "name": "p2plib",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Easy to use P2P library for any projects",
   "main": "main.js",
   "dependencies": {
