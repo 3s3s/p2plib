@@ -17,7 +17,7 @@ let g_LastHandledTime = 0;
 exports.handleConnection = function(ws)
 {
     if (Date.now() - g_LastHandledTime < 1000)
-        setTimeout(exports.handleConnection, 1000, ws);
+        return setTimeout(exports.handleConnection, 1000, ws);
 
     g_LastHandledTime = Date.now();
 
