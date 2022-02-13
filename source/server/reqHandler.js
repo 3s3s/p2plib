@@ -41,7 +41,7 @@ exports.handleConnection = function(ws)
 
     ws.onmessage = function(_event)  
     {
-        if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) return;
+        if (!_event.data || !_event.data.length || _event.data.length > g_constants.MAX_DATA_LENGTH) return;
 
         ws["isAlive"] = true;
 
@@ -52,7 +52,7 @@ exports.handleConnection = function(ws)
         const currentMessage = g_ClientMessages.shift();
     
         if (Date.now() - g_ClientMessages.time < 100)
-            return setTimeout(ws.onmessage, 100, g_ClientMessages.event)
+            return setTimeout(ws.onmessage, 100, currentMessage.event)
 /////////////////////////////////////////////////////////////////////////////////////////
 
         if (utils.GetSpeed(ws["remote_address"]) > 100)
