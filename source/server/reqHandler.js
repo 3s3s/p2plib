@@ -66,11 +66,18 @@ exports.handleConnection = function(ws)
     };   
 }
 
-let g_LastTimeBroadcasted = 0;
-exports.broadcastMessage = function(ip, client)
+let g_Messages = [];
+exports.broadcastMessage = function(_ip, _client)
 {
-    if (Date.now() - g_LastTimeBroadcasted < 100)
-        return setTimeout(exports.broadcastMessage, 100, ip, client)
+    g_Messages.push({ip: _ip, client: _client, time: Date.now});
+
+    const currentMessage = g_Messages.shift();
+
+    if (Date.now() - currentMessage.time < 100)
+        return setTimeout(exports.broadcastMessage, 100, currentMessage.ip, currentMessage.client)
+
+    const ip = currentMessage.ip; 
+    const client = currentMessage.client;
 
     g_LastTimeBroadcasted = Date.now();
 
