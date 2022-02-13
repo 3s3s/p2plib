@@ -45,10 +45,10 @@ exports.handleConnection = function(ws)
 
         ws["isAlive"] = true;
 
-        utils.UpdateSpeed(ws["remote_address"]);
-        
         if (utils.GetSpeed(ws["remote_address"]) > 10)
-           return console.error("Blocked too big message speed from host: "+ws["remote_address"])
+           return; // "Blocked too big message speed from host (must be no more that 10 messages per second)
+        
+        utils.UpdateSpeed(ws["remote_address"]);      
 
         let client = {};
         try { client = JSON.parse(data);} catch(e) { return; }

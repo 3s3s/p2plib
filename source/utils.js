@@ -20,7 +20,7 @@ exports.UpdateSpeed = function(ip)
   let newest = {}
   for (let key in g_ipMessageSpeed)
   {
-    if (g_ipMessageSpeed[key].prevTime > Date.now() - 3600*1000)
+    if (g_ipMessageSpeed[key].firstTime > Date.now() - 3600*1000)
       newest[key] = g_ipMessageSpeed[key];
   }
   g_ipMessageSpeed = newest;
