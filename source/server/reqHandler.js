@@ -73,11 +73,8 @@ exports.handleConnection = function(ws)
     };   
 }
 
-exports.broadcastMessage = function(_ip, _client)
+exports.broadcastMessage = function(ip, client)
 {
-    const ip = currentMessage.ip; 
-    const client = currentMessage.client;
-
     const data = JSON.stringify(client);
 
     const connectedFromMe = peers.GetPeers();
