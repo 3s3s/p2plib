@@ -13,8 +13,6 @@ listPeers - returned list of peers. Example: {request: "p2p", params: {command: 
 getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
 */
 
-let g_ClientMessages = [];
-
 exports.handleConnection = function(ws)
 {
     if (utils.IsBockedAddress(ws["remote_address"]))
@@ -46,11 +44,11 @@ exports.handleConnection = function(ws)
         if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) return;
 
         ws["isAlive"] = true;
-
-        utils.UpdateSpeed(ws["remote_address"]);
         
         if (utils.GetSpeed(ws["remote_address"]) > 10)
-           return console.error("Blocked too big message speed from host: "+ws["remote_address"])
+            return setTimeout(ws.onmessage, 100, event)
+
+        utils.UpdateSpeed(ws["remote_address"]);
 
         let client = {};
         try { client = JSON.parse(data);} catch(e) { return; }
