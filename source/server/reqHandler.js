@@ -82,14 +82,14 @@ exports.broadcastMessage = function(ip, client)
     for (let i=0; i<connectedFromMe.length; i++)
     {
         if (connectedFromMe[i].readyState === WebSocket.OPEN && connectedFromMe[i]["remote_address"] != ip)
-            connectedFromMe[i].send(data);
+            setTimeout(connectedFromMe[i].send, 1000, data)//connectedFromMe[i].send(data);
     }
 
     if (!g_constants.WEB_SOCKETS.clients) return;
 
     g_constants.WEB_SOCKETS.clients.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN && ws["remote_address"] != ip)
-            ws.send(data);        
+            setTimeout(ws.send, 1000, data)//ws.send(data);        
     })
 }
 
