@@ -3,6 +3,40 @@
 const g_crypto = require('crypto');
 const g_constants = require('./constants')
 
+let g_lastClear = 0;
+let g_ipMessageSpeed = {}
+exports.UpdateSpeed = function(ip)
+{
+  if (!g_ipMessageSpeed[ip])
+    g_ipMessageSpeed[ip] = {firstTime: Date.now(), count: 1.0}
+
+  g_ipMessageSpeed[ip].count++;
+ 
+  //////////////////////////////////////////////////////////////////
+  //Clear memory from old data
+  if (Date.now() - g_lastClear < 60*1000) return;
+  g_lastClear = Date.now();
+  
+  let newest = {}
+  for (let key in g_ipMessageSpeed)
+  {
+    if (g_ipMessageSpeed[key].prevTime > Date.now() - 3600*1000)
+      newest[key] = g_ipMessageSpeed[key];
+  }
+  g_ipMessageSpeed = newest;
+  //////////////////////////////////////////////////////////////////
+}
+exports.GetSpeed = function(ip)
+{
+  if (!g_ipMessageSpeed[ip])
+    g_ipMessageSpeed[ip] = {firstTime: Date.now()-2000, count: 1.0}
+
+  //Calculate average speed for messages (messages / sec)
+  const speed = (1000.0*g_ipMessageSpeed[ip].count) / (Math.max(1, Date.now() - g_ipMessageSpeed[ip].firstTime));
+
+  return speed;
+}
+
 exports.IsBockedAddress = function(ip)
 {
   if (ip.indexOf("127.0.0.1") > 0 || ip.indexOf(require("ip").address()) > 0)

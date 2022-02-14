@@ -39,13 +39,18 @@ exports.handleConnection = function(ws)
         ws["isAlive"] = false;
     };
 
-    ws.onmessage = function(_event)  
+    ws.onmessage = function(event)  
     {
-        if (!_event.data || !_event.data.length || _event.data.length > g_constants.MAX_DATA_LENGTH) return;
+        let data = event.data;
+
+        if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) return;
 
         ws["isAlive"] = true;
 
-        let data = currentMessage.event.data;
+        utils.UpdateSpeed(ws["remote_address"]);
+        
+        if (utils.GetSpeed(ws["remote_address"]) > 10)
+           return console.error("Blocked too big message speed from host: "+ws["remote_address"])
 
         let client = {};
         try { client = JSON.parse(data);} catch(e) { return; }
@@ -54,21 +59,6 @@ exports.handleConnection = function(ws)
         //Check request syntax
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////////////////////////////////////////
-        //Restrict data speed (for p2p requests)
-        if (client.request == "p2p")
-        {
-            if (g_ClientMessages.length < 100)
-                g_ClientMessages.push({event: _event, time: Date.now});
-
-            const currentMessage = g_ClientMessages.shift();
-        
-            if (Date.now() - g_ClientMessages.time < 1000)
-                return setTimeout(ws.onmessage, 1000, currentMessage.event)
-        }
-/////////////////////////////////////////////////////////////////////////////////////////
-
 
         client.params.TTL = client.params.TTL*1 - 1;
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
@@ -84,7 +74,7 @@ exports.broadcastMessage = function(ip, client)
 
     const connectedFromMe = peers.GetPeers();
 
-    for (let i=0; i<Math.min(10, connectedFromMe.length); i++)
+    for (let i=0; i<connectedFromMe.length; i++)
     {
         if (connectedFromMe[i].readyState === WebSocket.OPEN && connectedFromMe[i]["remote_address"] != ip)
             connectedFromMe[i].send(data);
@@ -94,7 +84,7 @@ exports.broadcastMessage = function(ip, client)
 
     g_constants.WEB_SOCKETS.clients.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN && ws["remote_address"] != ip)
-            ws.send(data)       
+            ws.send(data);        
     })
 }
 
