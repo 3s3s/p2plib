@@ -45,16 +45,6 @@ exports.handleConnection = function(ws)
 
         ws["isAlive"] = true;
 
-/////////////////////////////////////////////////////////////////////////////////////////
-        //Restrict data speed
-        g_ClientMessages.push({event: _event, time: Date.now});
-
-        const currentMessage = g_ClientMessages.shift();
-    
-        if (Date.now() - g_ClientMessages.time < 1000)
-            return setTimeout(ws.onmessage, 1000, currentMessage.event)
-/////////////////////////////////////////////////////////////////////////////////////////
-
         let data = currentMessage.event.data;
 
         let client = {};
@@ -64,6 +54,21 @@ exports.handleConnection = function(ws)
         //Check request syntax
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////
+        //Restrict data speed (for p2p requests)
+        if (client.request == "p2p")
+        {
+            if (g_ClientMessages.length < 100)
+                g_ClientMessages.push({event: _event, time: Date.now});
+
+            const currentMessage = g_ClientMessages.shift();
+        
+            if (Date.now() - g_ClientMessages.time < 1000)
+                return setTimeout(ws.onmessage, 1000, currentMessage.event)
+        }
+/////////////////////////////////////////////////////////////////////////////////////////
+
 
         client.params.TTL = client.params.TTL*1 - 1;
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
