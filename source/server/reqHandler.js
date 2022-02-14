@@ -79,17 +79,17 @@ exports.broadcastMessage = function(ip, client)
 
     const connectedFromMe = peers.GetPeers();
 
-    for (let i=0; i<connectedFromMe.length; i++)
+    for (let i=0; i<Math.min(10, connectedFromMe.length); i++)
     {
         if (connectedFromMe[i].readyState === WebSocket.OPEN && connectedFromMe[i]["remote_address"] != ip)
-            setTimeout(connectedFromMe[i].send, 1000, data)//connectedFromMe[i].send(data);
+            connectedFromMe[i].send(data);
     }
 
     if (!g_constants.WEB_SOCKETS.clients) return;
 
     g_constants.WEB_SOCKETS.clients.forEach(ws => {
         if (ws.readyState === WebSocket.OPEN && ws["remote_address"] != ip)
-            setTimeout(ws.send, 1000, data)//ws.send(data);        
+            ws.send(data);        
     })
 }
 
