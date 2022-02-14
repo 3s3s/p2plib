@@ -55,11 +55,6 @@ exports.handleConnection = function(ws)
             return setTimeout(ws.onmessage, 1000, currentMessage.event)
 /////////////////////////////////////////////////////////////////////////////////////////
 
-        if (utils.GetSpeed(ws["remote_address"]) > 100)
-           return; // "Blocked too big message speed from host (must be no more that 100 messages per second)
-        
-        utils.UpdateSpeed(ws["remote_address"]);      
-
         let data = currentMessage.event.data;
 
         let client = {};
@@ -78,23 +73,12 @@ exports.handleConnection = function(ws)
     };   
 }
 
-let g_Messages = [];
 exports.broadcastMessage = function(_ip, _client)
 {
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Sent no more than one proadcast message per second
-    g_Messages.push({ip: _ip, client: _client, time: Date.now});
-
-    const currentMessage = g_Messages.shift();
-
-    if (Date.now() - currentMessage.time < 1000)
-        return setTimeout(exports.broadcastMessage, 1000, currentMessage.ip, currentMessage.client)
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     const ip = currentMessage.ip; 
     const client = currentMessage.client;
 
-     const data = JSON.stringify(client);
+    const data = JSON.stringify(client);
 
     const connectedFromMe = peers.GetPeers();
 
