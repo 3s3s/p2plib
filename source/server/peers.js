@@ -77,7 +77,7 @@ exports.HandleMessage = function(client)
 
 async function ConnectNewPeers()
 {
-    const peers = await utils.GetPeersFromDB("time > "+(Date.now()-60*1000));
+    const peers = await utils.GetPeersFromDB("");
 
     QueryNewPeers();
 
