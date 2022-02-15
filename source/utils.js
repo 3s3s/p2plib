@@ -34,10 +34,8 @@ exports.GetSpeed = function(ip)
   //Calculate average speed for messages (messages / sec)
   const speed = (1000.0*g_ipMessageSpeed[ip].count) / (Math.max(1, Date.now() - g_ipMessageSpeed[ip].firstTime));
 
-  if (speed > 10)
-  {
-    const i = 0
-  }
+  if (g_ipMessageSpeed[ip].count < 100)
+    return 0;
 
   return speed;
 }
