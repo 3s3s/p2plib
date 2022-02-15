@@ -53,7 +53,7 @@ exports.handleConnection = function(ws)
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        if (g_knownUIDs[client.params.uid] !== 'undefined')  return;
+        if (g_knownUIDs[client.params.uid] !== undefined)  return;
 
         g_knownUIDs[client.params.uid] = Date.now();
         CleanMemory();
