@@ -8,10 +8,10 @@ exports.HandleMessage = async function(client)
     if (!client || !client.params || !client.params.command) return;
 
     if (client.params.command == "getPeers")
-        return p2p.broadcastMessage({request: "p2p", params: {uid: client.params.uid, command: "listPeers", list: await p2p.GetLastSavedPeers() } }) 
+        return p2p.broadcastMessage({request: "p2p", params: {destination: client.params.uid, command: "listPeers", list: await p2p.GetLastSavedPeers() } }) 
     
-    if (client.params.command == "listPeers" && client.params.list && client.params.list.length)
-        return peers.SavePeers(client.params.uid, client.params.list);
+    if (client.params.command == "listPeers" && client.params.list && client.params.list.length && client.params.destination)
+        return peers.SavePeers(client.params.destination, client.params.list);
 
     if (client.params.command == "getPort" && client.params.address && typeof window === 'undefined')
     {
@@ -25,6 +25,6 @@ exports.HandleMessage = async function(client)
                 break;
             }
         }    
-        return p2p.broadcastMessage({request: "p2p", params: {command: "listPeers", uid: client.params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
+        return p2p.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: client.params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
     }     
 }

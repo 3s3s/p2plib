@@ -3,7 +3,7 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 exports.my_portSSL = 10443;
 
-exports.seeders = ["82.118.22.155:10443", "trade.multicoins.org:10443"];
+exports.seeders = ["82.118.22.155:10443", "trade.multicoins.org:10443", "p2p-test.tk:10443"];
 
 exports.DEBUG = false;
 

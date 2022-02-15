@@ -12,7 +12,7 @@ getPeers - requesting peers from P2P network. Example: {request: "p2p", params: 
 listPeers - returned list of peers. Example: {request: "p2p", params: {command: "listPeers", uid: "qwert", TTL: 3, list: [1.1.1.1:10443, 1.2.3.4:10443, ...] } } 
 getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
 */
-
+let g_knownUIDs = {}
 exports.handleConnection = function(ws)
 {
     if (utils.IsBockedAddress(ws["remote_address"]))
@@ -44,11 +44,6 @@ exports.handleConnection = function(ws)
         if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) return;
 
         ws["isAlive"] = true;
-        
-        if (utils.GetSpeed(ws["remote_address"]) > 10)
-            return setTimeout(ws.onmessage, 100, event)
-
-        utils.UpdateSpeed(ws["remote_address"]);
 
         let client = {};
         try { client = JSON.parse(data);} catch(e) { return; }
@@ -57,6 +52,21 @@ exports.handleConnection = function(ws)
         //Check request syntax
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        if (g_knownUIDs[client.params.uid] !== 'undefined')  return;
+
+        g_knownUIDs[client.params.uid] = Date.now();
+        CleanMemory();
+
+        utils.UpdateSpeed(ws["remote_address"]);
+        
+        if (utils.GetSpeed(ws["remote_address"]) > 10)
+        {
+            console.error("Blocked too big message speed from host: "+ws["remote_address"])
+            console.log("command: "+client.params.command+"; TTL="+client.params.TTL)
+            return;
+        }
+
 
         client.params.TTL = client.params.TTL*1 - 1;
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
@@ -100,4 +110,15 @@ exports.IsConnected = function(peer)
     })
 
     return ret;
+}
+
+function CleanMemory()
+{
+    let newest = {};
+    for(let key in g_knownUIDs)
+    {
+        if (Date.now() - g_knownUIDs[key] < 60*1000)
+            newest[key] = g_knownUIDs[key]
+    }
+    g_knownUIDs = newest;
 }
