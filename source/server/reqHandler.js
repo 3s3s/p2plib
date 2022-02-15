@@ -60,7 +60,7 @@ exports.handleConnection = function(ws)
 
         utils.UpdateSpeed(ws["remote_address"]);
         
-        if (utils.GetSpeed(ws["remote_address"]) > 10)
+        if (utils.GetSpeed(ws["remote_address"]) > 100)
         {
             console.error("Blocked too big message speed from host: "+ws["remote_address"])
             console.log("command: "+client.params.command+"; TTL="+client.params.TTL)
