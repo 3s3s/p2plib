@@ -5,9 +5,6 @@ const $ = require('jquery');
 const peers = require("../server/peers")
 
 const P2P_PROTOCOL = {
-    getPeers: require("../server/protocol/getPeers"),
-    getPort: require("../server/protocol/getPort"),
-    listPeers: require("../server/protocol/listPeers"),
     STARTED: false
 }
 

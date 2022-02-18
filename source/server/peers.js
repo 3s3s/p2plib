@@ -71,8 +71,10 @@ exports.Init = async function(P2P_protocol)
 
 exports.HandleMessage = function(client)
 {
-    if (g_P2P_protocol && g_P2P_protocol.STARTED)
+    if (g_P2P_protocol && g_P2P_protocol.STARTED && !!g_P2P_protocol[client.request])
         return g_P2P_protocol[client.request].HandleMessage(client);
+
+    return require("./protocol/"+client.request).HandleMessage(ws, client)
 }
 
 async function ConnectNewPeers()

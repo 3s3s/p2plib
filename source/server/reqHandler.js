@@ -112,8 +112,14 @@ exports.IsConnected = function(peer)
     return ret;
 }
 
+let g_LastClean = 0
 function CleanMemory()
 {
+    if (g_LastClean > Date.now() - 60*1000)
+        return;
+
+    g_LastClean = Date.now();
+
     let newest = {};
     for(let key in g_knownUIDs)
     {
