@@ -26,6 +26,8 @@ exports.Init = async function(P2P_protocol)
     if (g_P2P_protocol)
     {
         if (!g_P2P_protocol["p2p"]) g_P2P_protocol["p2p"] = require("./p2p");
+
+        g_P2P_protocol["seeders"] = g_P2P_protocol["seeders"] ? g_P2P_protocol["seeders"].concat(g_constants.seeders) : g_constants.seeders;
         
         if (!g_P2P_protocol.STARTED)
             return StopConnections();
@@ -86,8 +88,8 @@ async function ConnectNewPeers()
     for (let i=0; i<peers.length; i++)
         Connect(unescape(peers[i].address))
 
-    for (let i=0; i<g_constants.seeders.length; i++)
-        Connect(g_constants.seeders[i]);
+    for (let i=0; i<g_P2P_protocol["seeders"].length; i++)
+        Connect(g_P2P_protocol["seeders"][i]);
 }
 
 exports.createUID = function()
