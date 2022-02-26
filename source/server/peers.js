@@ -76,7 +76,7 @@ exports.HandleMessage = function(client)
     if (g_P2P_protocol && g_P2P_protocol.STARTED && !!g_P2P_protocol[client.request])
         return g_P2P_protocol[client.request].HandleMessage(client);
 
-    return require("./p2p/"+client.request).HandleMessage(ws, client)
+    return require("./p2p").HandleMessage(ws, client)
 }
 
 async function ConnectNewPeers()
