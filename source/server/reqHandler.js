@@ -81,6 +81,8 @@ exports.broadcastMessage = function(ip, client)
     try {
         const data = JSON.stringify(client);
 
+        if (data.length > g_constants.MAX_DATA_LENGTH) throw new Error("too big data length "+data)
+
         const connectedFromMe = peers.GetPeers();
 
         for (let i=0; i<connectedFromMe.length; i++)
