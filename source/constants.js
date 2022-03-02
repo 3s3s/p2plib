@@ -8,7 +8,7 @@ exports.seeders = ["trade.multicoins.org:10443", "p2p-test.tk:10443"];
 exports.DEBUG = false;
 
 exports.MAX_CONNECTIONS = 10;
-exports.MAX_DATA_LENGTH = 1024*10; //10 kb should be enought
+exports.MAX_DATA_LENGTH = 1024*100; //100 kb should be enought
 
 const SSL_KEY_PATH = __dirname+"/server/ssl_cert/privkey.pem";
 const SSL_CERT_PATH = __dirname+"/server/ssl_cert/fullchain.pem";
