@@ -41,12 +41,19 @@ exports.handleConnection = function(ws)
     {
         let data = event.data;
 
-        if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) return;
+        if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) {
+            console.log("SKIPED MESAGE: wrong data or data length")
+            return;
+        }
 
         ws["isAlive"] = true;
 
         let client = {};
-        try { client = JSON.parse(data);} catch(e) { return; }
+        try { client = JSON.parse(data);} 
+        catch(e) { 
+            console.log(e);
+            return; 
+        }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
