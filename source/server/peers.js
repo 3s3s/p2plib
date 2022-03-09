@@ -30,9 +30,7 @@ exports.Init = async function(P2P_protocol)
             return StopConnections();
     }
 
-    ConnectNewPeers();
-
-    setTimeout(ReconnectNewPeers, 30000)
+    ReconnectNewPeers();
 
     function StopConnections()
     {
@@ -41,15 +39,18 @@ exports.Init = async function(P2P_protocol)
     }
 }
 
-function ReconnectNewPeers()
+async function ReconnectNewPeers()
 {
+    if (!g_P2P_protocol.STARTED)
+        return;
+
     let alivePeers = [];
     for (let i=0; i<g_ConnectedPeers.length; i++)
     {
         if (g_ConnectedPeers[i]["isAlive"] === false)
         {
             console.log("Terminate dead connection: "+g_ConnectedPeers[i]["remote_address"])
-            g_ConnectedPeers[i].terminate();
+            g_ConnectedPeers[i].close();
             continue;
         }
         g_ConnectedPeers[i]["isAlive"] = false;
@@ -58,7 +59,7 @@ function ReconnectNewPeers()
     g_ConnectedPeers = alivePeers;
 
     if (g_ConnectedPeers.length < g_constants.MAX_CONNECTIONS)
-        ConnectNewPeers();
+        await ConnectNewPeers();
 
     const list = exports.GetConnectedPeers("-");
     console.log("Connected peers: "+JSON.stringify(list))

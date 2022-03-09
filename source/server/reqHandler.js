@@ -17,7 +17,7 @@ exports.handleConnection = function(ws)
 {
     if (utils.IsBockedAddress(ws["remote_address"]))
     {
-        ws.terminate();
+        ws.close();
         console.log("blocked request")
         return;       
     }
