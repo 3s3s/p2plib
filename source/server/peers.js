@@ -15,7 +15,6 @@ exports.IsOwnUID = function(uid)
     return false;
 }
 
-
 let g_P2P_protocol = null;
 exports.Init = async function(P2P_protocol)
 {
@@ -50,7 +49,7 @@ function ReconnectNewPeers()
         if (g_ConnectedPeers[i]["isAlive"] === false)
         {
             console.log("Terminate dead connection: "+g_ConnectedPeers[i]["remote_address"])
-            g_ConnectedPeers[i].close();
+            g_ConnectedPeers[i].terminate();
             continue;
         }
         g_ConnectedPeers[i]["isAlive"] = false;
