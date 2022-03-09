@@ -31,12 +31,11 @@ exports.StartServer = function(P2P_protocol)
     g_constants.WEB_SOCKETS = new WebSocketServer({ server: httpsServer, clientTracking: true, perMessageDeflate: true });
 
     const interval = setInterval(() => {
-        g_constants.WEB_SOCKETS.clients.forEach(ws => {
-        if (ws["isAlive"] === false) 
-            return ws.terminate();
-    
-        ws["isAlive"] = false;
-        ws.ping();
+            g_constants.WEB_SOCKETS.clients.forEach(ws => {
+            if (ws["isAlive"] === false) 
+                return ws.terminate();
+        
+            ws["isAlive"] = false;
         });
     }, 30000);
 

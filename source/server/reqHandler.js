@@ -17,19 +17,12 @@ exports.handleConnection = function(ws)
 {
     if (utils.IsBockedAddress(ws["remote_address"]))
     {
-        ws.terminate();
+        ws.close();
         console.log("blocked request")
         return;       
     }
     ws["isAlive"] = true;
  
-    if (typeof window === 'undefined')
-    {
-        ws.on('pong', () => {
-            ws["isAlive"] = true;
-        });
-    }
-
     ws.onerror = function() {
         ws["isAlive"] = false;
     };
@@ -46,8 +39,6 @@ exports.handleConnection = function(ws)
             return;
         }
 
-        ws["isAlive"] = true;
-
         let client = {};
         try { client = JSON.parse(data);} 
         catch(e) { 
@@ -59,6 +50,8 @@ exports.handleConnection = function(ws)
         //Check request syntax
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ws["isAlive"] = true;
 
         if (g_knownUIDs[client.params.uid] !== undefined)  return;
 

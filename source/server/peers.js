@@ -38,7 +38,9 @@ exports.Init = async function(P2P_protocol)
  
     ConnectNewPeers();
 
-    g_ConnectionsInterval = setInterval(() => {
+    setTimeout(ReconnectNewPeers, 30000)
+
+/*    g_ConnectionsInterval = setInterval(() => {
         let alivePeers = [];
         for (let i=0; i<g_ConnectedPeers.length; i++)
         {
@@ -58,7 +60,7 @@ exports.Init = async function(P2P_protocol)
 
         const list = exports.GetConnectedPeers("-");
         console.log("Connected peers: "+JSON.stringify(list))
-    }, 30000);   
+    }, 30000);   */
     
     function StopConnections()
     {
@@ -69,6 +71,31 @@ exports.Init = async function(P2P_protocol)
         for (let i=0; i<g_ConnectedPeers.length; i++)
             g_ConnectedPeers[i].close();
     }
+}
+
+function ReconnectNewPeers()
+{
+    let alivePeers = [];
+    for (let i=0; i<g_ConnectedPeers.length; i++)
+    {
+        if (g_ConnectedPeers[i]["isAlive"] === false)
+        {
+            console.log("Terminate dead connection: "+g_ConnectedPeers[i]["remote_address"])
+            g_ConnectedPeers[i].close();
+            continue;
+        }
+        g_ConnectedPeers[i]["isAlive"] = false;
+        alivePeers.push(g_ConnectedPeers[i])
+    }
+    g_ConnectedPeers = alivePeers;
+
+    if (g_ConnectedPeers.length < g_constants.MAX_CONNECTIONS)
+        ConnectNewPeers();
+
+    const list = exports.GetConnectedPeers("-");
+    console.log("Connected peers: "+JSON.stringify(list))
+
+    setTimeout(ReconnectNewPeers, 30000)
 }
 
 exports.HandleMessage = function(client)
