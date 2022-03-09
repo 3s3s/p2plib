@@ -51,18 +51,18 @@ exports.handleConnection = function(ws)
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ws["isAlive"] = true;
+        this["isAlive"] = true;
 
         if (g_knownUIDs[client.params.uid] !== undefined)  return;
 
         g_knownUIDs[client.params.uid] = Date.now();
         CleanMemory();
 
-        utils.UpdateSpeed(ws["remote_address"]);
+        utils.UpdateSpeed(this["remote_address"]);
         
-        if (utils.GetSpeed(ws["remote_address"]) > 100)
+        if (utils.GetSpeed(this["remote_address"]) > 100)
         {
-            console.error("Blocked too big message speed from host: "+ws["remote_address"])
+            console.error("Blocked too big message speed from host: "+this["remote_address"])
             console.log("command: "+client.params.command+"; TTL="+client.params.TTL)
             return;
         }
@@ -70,7 +70,7 @@ exports.handleConnection = function(ws)
 
         client.params.TTL = client.params.TTL*1 - 1;
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
-            exports.broadcastMessage(ws["remote_address"], client)
+            exports.broadcastMessage(this["remote_address"], client)
 
         try { peers.HandleMessage(client);} catch(e) {}
     };   

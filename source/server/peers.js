@@ -179,12 +179,12 @@ function Connect(peer)
 
         client.onerror = function(ev) 
         {
-            client["isAlive"] = false;
+            this["isAlive"] = false;
             delete g_TryConnect[peer];
         };
         client.onclose = function(ev) 
         {
-            client["isAlive"] = false;
+            this["isAlive"] = false;
             delete g_TryConnect[peer];
 
             utils.SavePeer(peer, false);
@@ -194,8 +194,8 @@ function Connect(peer)
         {
             delete g_TryConnect[peer];
 
-            g_ConnectedPeers.push(client);
-            reqHandler.handleConnection(client);
+            g_ConnectedPeers.push(this);
+            reqHandler.handleConnection(this);
 
             utils.SavePeer(peer);
         }
