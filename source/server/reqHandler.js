@@ -24,10 +24,10 @@ exports.handleConnection = function(ws)
     ws["isAlive"] = true;
  
     ws.onerror = function() {
-        ws["isAlive"] = false;
+        this["isAlive"] = false;
     };
     ws.onclose = function () {
-        ws["isAlive"] = false;
+        this["isAlive"] = false;
     };
 
     ws.onmessage = function(event)  
