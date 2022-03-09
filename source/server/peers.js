@@ -8,8 +8,6 @@ const utils = require("../utils")
 let g_sentUIDS = {};
 let g_ConnectedPeers = [];
 
-let g_ConnectionsInterval = 0;
-
 exports.IsOwnUID = function(uid)
 {
     if (g_sentUIDS[uid])
@@ -33,41 +31,12 @@ exports.Init = async function(P2P_protocol)
             return StopConnections();
     }
 
-    if (g_ConnectionsInterval)
-        return;
- 
     ConnectNewPeers();
 
     setTimeout(ReconnectNewPeers, 30000)
 
-/*    g_ConnectionsInterval = setInterval(() => {
-        let alivePeers = [];
-        for (let i=0; i<g_ConnectedPeers.length; i++)
-        {
-            if (g_ConnectedPeers[i]["isAlive"] === false)
-            {
-                console.log("Terminate dead connection: "+g_ConnectedPeers[i]["remote_address"])
-                g_ConnectedPeers[i].close();
-                continue;
-            }
-            g_ConnectedPeers[i]["isAlive"] = false;
-            alivePeers.push(g_ConnectedPeers[i])
-        }
-        g_ConnectedPeers = alivePeers;
-    
-        if (g_ConnectedPeers.length < g_constants.MAX_CONNECTIONS)
-            ConnectNewPeers();
-
-        const list = exports.GetConnectedPeers("-");
-        console.log("Connected peers: "+JSON.stringify(list))
-    }, 30000);   */
-    
     function StopConnections()
     {
-        clearInterval(g_ConnectionsInterval);
-
-        g_ConnectionsInterval = 0;
-
         for (let i=0; i<g_ConnectedPeers.length; i++)
             g_ConnectedPeers[i].close();
     }
@@ -183,9 +152,6 @@ exports.IsConnected = function(peer)
 let g_TryConnect = {}
 function Connect(peer)
 {
-    if (g_ConnectionsInterval == 0)
-        return;
-
     if (utils.IsBockedAddress(peer))
         return;
         
