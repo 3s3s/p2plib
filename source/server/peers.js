@@ -177,6 +177,8 @@ function Connect(peer)
         client["remote_address"] = peer;
         client["isAlive"] = false;
 
+        g_ConnectedPeers.push(client)
+
         client.onerror = function(ev) 
         {
             this["isAlive"] = false;
@@ -194,7 +196,7 @@ function Connect(peer)
         {
             delete g_TryConnect[peer];
 
-            g_ConnectedPeers.push(this);
+            //g_ConnectedPeers.push(this);
             reqHandler.handleConnection(this);
 
             utils.SavePeer(peer);

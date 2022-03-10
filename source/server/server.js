@@ -28,7 +28,7 @@ exports.StartServer = function(P2P_protocol)
         console.log("SSL server listening on port "+g_constants.my_portSSL);
     });
 
-    g_constants.WEB_SOCKETS = new WebSocketServer({ server: httpsServer, clientTracking: true, perMessageDeflate: true });
+    g_constants.WEB_SOCKETS = new WebSocketServer({ server: httpsServer, perMessageDeflate: false });
 
     const interval = setInterval(() => {
             g_constants.WEB_SOCKETS.clients.forEach(ws => {

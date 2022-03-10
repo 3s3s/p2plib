@@ -32,6 +32,8 @@ exports.handleConnection = function(ws)
 
     ws.onmessage = function(event)  
     {
+        this["isAlive"] = false;
+
         let data = event.data;
 
         if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) {
