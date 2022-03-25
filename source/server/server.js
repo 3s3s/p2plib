@@ -15,7 +15,7 @@ if (typeof window !== 'object')
     })
 }
 
-exports.StartServer = function(P2P_protocol)
+exports.StartServer = function(P2P_protocol =  {STARTED: true})
 {
     require("./database").Init();
     require("./peers").Init(P2P_protocol);
