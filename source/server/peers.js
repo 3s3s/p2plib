@@ -70,7 +70,7 @@ async function ReconnectNewPeers()
 exports.HandleMessage = function(client)
 {
     if (g_P2P_protocol && g_P2P_protocol.STARTED && !!g_P2P_protocol[client.request])
-        return g_P2P_protocol[client.request].HandleMessage(client);
+        g_P2P_protocol[client.request].HandleMessage(client);
 
     return require("./p2p").HandleMessage(ws, client)
 }

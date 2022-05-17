@@ -59,3 +59,66 @@ exports.broadcastMessage = function(message)
 
     return message.params["uid"];
 }
+
+let g_Callbacks = {};
+
+exports.SendMessage = function(params, callback)
+{
+    const connected = exports.GetConnectedPeers();
+
+    if (!connected.length)
+        return setTimeout(exports.SendMessage, 50000, params, callback)
+
+    const message = {request: "custom", params: params}
+    const uid = exports.broadcastMessage(message);
+
+    if (uid) g_Callbacks[uid] = {callback: callback, time: Date.now()};
+
+    FreeMemory();
+}
+
+exports.ProcessAnswer = function(params, answerPublic = null)
+{
+    if (answerPublic != null)
+    {
+        exports.broadcastMessage({
+            request: "custom", 
+            params: {
+                destination: params["uid"], 
+                command: "answer", 
+                serverKey: params.serverKey || false, 
+                values: answerPublic
+            }
+        });
+    }
+
+    if (params["command"] == "answer" && g_Callbacks[params.destination] !== undefined && params.values)
+    {
+        try {
+            g_Callbacks[params.destination].callback(params.values);
+        }
+        catch(e) {}
+        delete g_Callbacks[params.destination];
+    }
+}
+
+async function FreeMemory()
+{
+    const date = Date.now();
+
+    let tmp = {}
+    for (let key in g_Callbacks)
+    {
+        if (g_Callbacks[key] && g_Callbacks[key].time < date - 3*60*1000)
+        {
+            try {
+                await g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
+            }
+            catch(e)
+            {}
+            continue;
+        }
+        tmp[key] = g_Callbacks[key];
+    }
+    g_Callbacks = tmp;
+}

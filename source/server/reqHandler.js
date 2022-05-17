@@ -37,15 +37,13 @@ exports.handleConnection = function(ws)
         let data = event.data;
 
         if (!data || !data.length || data.length > g_constants.MAX_DATA_LENGTH) {
-            console.log("SKIPED MESAGE: wrong data or data length")
-            return;
+            return console.log("SKIPED MESAGE: wrong data or data length")
         }
 
         let client = {};
         try { client = JSON.parse(data);} 
         catch(e) { 
-            console.log(e);
-            return; 
+            return console.log(e);
         }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,8 +63,7 @@ exports.handleConnection = function(ws)
         if (utils.GetSpeed(this["remote_address"]) > 100)
         {
             console.error("Blocked too big message speed from host: "+this["remote_address"])
-            console.log("command: "+client.params.command+"; TTL="+client.params.TTL)
-            return;
+            return console.log("command: "+client.params.command+"; TTL="+client.params.TTL)
         }
 
 
