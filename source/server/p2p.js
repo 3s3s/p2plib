@@ -3,19 +3,19 @@
 const p2p = require("../../main")
 const peers = require("./peers")
 
-exports.HandleMessage = async function(client)
+exports.HandleMessage = async function(params)
 {
-    if (!client || !client.params || !client.params.command) return;
+    if (!params || !params.command) return;
 
-    if (client.params.command == "getPeers")
-        return p2p.broadcastMessage({request: "p2p", params: {destination: client.params.uid, command: "listPeers", list: await p2p.GetLastSavedPeers() } }) 
+    if (params.command == "getPeers")
+        return p2p.broadcastMessage({request: "p2p", params: {destination: params.uid, command: "listPeers", list: await p2p.GetLastSavedPeers() } }) 
     
-    if (client.params.command == "listPeers" && client.params.list && client.params.list.length && client.params.destination)
-        return peers.SavePeers(client.params.destination, client.params.list);
+    if (params.command == "listPeers" && params.list && params.list.length && params.destination)
+        return peers.SavePeers(params.destination, params.list);
 
-    if (client.params.command == "getPort" && client.params.address && typeof window === 'undefined')
+    if (params.command == "getPort" && params.address && typeof window === 'undefined')
     {
-        const parts = client.params.address.split(":");
+        const parts = params.address.split(":");
         let address = "";
         for (let i=0; i<Math.min(10, parts.length); i++)
         {
@@ -25,6 +25,6 @@ exports.HandleMessage = async function(client)
                 break;
             }
         }    
-        return p2p.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: client.params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
+        return p2p.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
     }     
 }

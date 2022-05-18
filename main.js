@@ -92,7 +92,7 @@ exports.ProcessAnswer = function(params, answerPublic = null)
         });
     }
 
-    if (params["command"] == "answer" && g_Callbacks[params.destination] !== undefined && params.values)
+    if (params["command"] == "answer" && !!g_Callbacks[params.destination] && params.values)
     {
         try {
             g_Callbacks[params.destination].callback(params.values);
@@ -121,4 +121,14 @@ async function FreeMemory()
         tmp[key] = g_Callbacks[key];
     }
     g_Callbacks = tmp;
+}
+
+global.p2plib = function(PROTOCOL = {STARTED:true}) 
+{
+    this.GetConnectedPeers = exports.GetConnectedPeers;
+    this.GetLastSavedPeers = exports.GetLastSavedPeers;
+    this.SendMessage = exports.SendMessage;
+    this.ProcessAnswer = exports.ProcessAnswer;
+
+    exports.StartPeer(PROTOCOL)
 }

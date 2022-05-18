@@ -69,10 +69,13 @@ async function ReconnectNewPeers()
 
 exports.HandleMessage = function(client)
 {
-    if (g_P2P_protocol && g_P2P_protocol.STARTED && !!g_P2P_protocol[client.request])
-        g_P2P_protocol[client.request].HandleMessage(client);
+    if (!client || !client["params"] || !client.params["command"])
+        return;
 
-    return require("./p2p").HandleMessage(ws, client)
+    if (g_P2P_protocol && g_P2P_protocol.STARTED && !!g_P2P_protocol[client.request] && client.params["uid"])
+        g_P2P_protocol[client.request].HandleMessage(client.params);
+
+    return require("./p2p").HandleMessage(ws, client.params)
 }
 
 async function ConnectNewPeers()
