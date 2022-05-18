@@ -88,3 +88,5 @@ npm run daemon_stop
 Examples: 
 
 https://3s3s.github.io/p2plib/browser/html/popup.html
+
+https://3s3s.github.io/p2plib/browser/html/simple_chat.html

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="kzv">
+    
+    <link rel="stylesheet" href="../css/main.css" >
+    <link rel="stylesheet" href="../css/bootstrap.min.css" >
+
+  </head>
+    
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <button class="nav-link active" id="network-tab" data-bs-toggle="tab" data-bs-target="#network" type="button" role="tab" aria-controls="network" aria-selected="true">Network</button>
+            </li>
+          </ul>        
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="network" role="tabpanel" aria-labelledby="network-tab">
+              <div class="container p-0">
+                <div class="row">
+                  <div class="table-wrapper col">
+                    <table id="table_peers" class="table table-bordered table-sm">
+                      <thead>
+                        <tr>
+                          <th scope="col">peer</th>
+                          <th scope="col">state</th>
+                        </tr>
+                      </thead>
+                      <tbody id="table_peers_body">
+      
+                      </tbody>
+                    </table>      
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div id="network-status"></div>
+                    <button type="button" class="btn btn-info" id="network-start">Start/Stop</button>
+                  </div>
+                </div>
+              </div>
+       
+            </div>
+
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="https://3s3s.github.io/p2plib/browser/js/main.js"></script>
+  </body>
+</html>
