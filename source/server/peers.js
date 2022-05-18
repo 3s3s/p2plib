@@ -72,8 +72,13 @@ exports.HandleMessage = function(client)
     if (!client || !client["params"] || !client.params["command"])
         return;
 
-    if (g_P2P_protocol && g_P2P_protocol.STARTED && !!g_P2P_protocol[client.request] && client.params["uid"])
-        g_P2P_protocol[client.request].HandleMessage(client.params);
+    if (!!g_P2P_protocol && !!g_P2P_protocol.STARTED && !!client.params["uid"])
+    {
+        //g_P2P_protocol[client.request].HandleMessage(client.params);
+        const message = client.params["command"];
+        if (!!g_P2P_protocol["__handlers__"] && !!g_P2P_protocol["__handlers__"][message])
+            g_P2P_protocol["__handlers__"][message](client.params)
+    }
 
     return require("./p2p").HandleMessage(ws, client.params)
 }

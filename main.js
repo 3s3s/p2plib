@@ -6,9 +6,9 @@ const peers = require("./source/server/peers")
 const utils = require("./source/utils")
 const g_constants = require("./source/constants")
 
-let g_P2P_protocol = {STARTED: false}
+let g_P2P_protocol = {STARTED: false, __handlers__: {}}
 
-exports.StartServer = function(P2P_protocol = {STARTED: true})
+exports.StartServer = function(P2P_protocol = {STARTED: true, __handlers__: {}})
 {
     if (g_P2P_protocol.STARTED) return;
     
@@ -27,7 +27,7 @@ exports.GetListenPort = function()
     return g_P2P_protocol["my_portSSL"] || g_constants.my_portSSL;
 }
 
-exports.StartPeer = function(PROTOCOL = {STARTED:true})
+exports.StartPeer = function(PROTOCOL = {STARTED:true, __handlers__: {}})
 {
     peers.Init(PROTOCOL);
 
@@ -123,12 +123,51 @@ async function FreeMemory()
     g_Callbacks = tmp;
 }
 
-global.p2plib = function(PROTOCOL = {STARTED:true}) 
+global.p2plib = function(start = true) 
 {
     this.GetConnectedPeers = exports.GetConnectedPeers;
     this.GetLastSavedPeers = exports.GetLastSavedPeers;
     this.SendMessage = exports.SendMessage;
     this.ProcessAnswer = exports.ProcessAnswer;
 
-    exports.StartPeer(PROTOCOL)
+    g_P2P_protocol["__handlers__"] = {}
+
+    this.StartPeer = function(options = null) {
+        if (options)
+        {
+            for (let key in options)
+                g_P2P_protocol[key] = options[key]
+        }
+        g_P2P_protocol.STARTED = true;
+
+        exports.StartPeer(g_P2P_protocol)
+    }
+    this.StopPeer = function() {
+        g_P2P_protocol.STARTED = false;
+        exports.StartPeer(g_P2P_protocol)
+    }
+
+    this.StartServer = function(options = null) {
+        if (options)
+        {
+            for (let key in options)
+                g_P2P_protocol[key] = options[key]
+        }
+        g_P2P_protocol.STARTED = false;
+
+        exports.StartServer(g_P2P_protocol)
+    }
+    this.StopServer = function() {
+        g_P2P_protocol.STARTED = true;
+        exports.StartServer(g_P2P_protocol)
+    }
+    this.IsStarted = function () {return g_P2P_protocol.STARTED;}
+
+    this.on = function(message, handler) {
+        g_P2P_protocol["__handlers__"][message] = handler;
+    }
+
+    if (start) this.StartPeer();
+
+    return this;
 }
