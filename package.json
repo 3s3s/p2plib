@@ -13,7 +13,7 @@
   "scripts": {
     "compile": "browserify ./source/browser/main.js > ./browser/js/main.js",
     "compile_debug": "browserify --debug ./source/browser/main.js > ./browser/js/main.js",
-    "compile_debug_lib": "browserify --debug ./source/server/peers.js > ./browser/js/p2plib_d.js",
+    "compile_debug_lib": "browserify --debug ./main.js > ./browser/js/p2plib_d.js",
     "server": "node ./source/server/main.js",
     "daemon": "forever -s start ./source/server/main.js",
     "daemon_stop": "forever stop ./source/server/main.js"
