@@ -64,17 +64,21 @@ let g_Callbacks = {};
 
 exports.SendMessage = function(params, callback)
 {
-    const connected = exports.GetConnectedPeers();
+    try {
+        const connected = exports.GetConnectedPeers();
 
-    if (!connected.length)
-        return setTimeout(exports.SendMessage, 50000, params, callback)
+        if (!connected || !connected.length) throw new Error("Offline: no connected peers.")
 
-    const message = {request: "custom", params: params}
-    const uid = exports.broadcastMessage(message);
+        const message = {request: "custom", params: params}
+        const uid = exports.broadcastMessage(message);
 
-    if (uid) g_Callbacks[uid] = {callback: callback, time: Date.now()};
+        if (uid) g_Callbacks[uid] = {callback: callback, time: Date.now()};
 
-    FreeMemory();
+        FreeMemory();
+    }
+    catch(e) {
+        callback({result: false, message: e.message})
+    }
 }
 
 exports.ProcessAnswer = function(params, answerPublic = null)
@@ -102,25 +106,35 @@ exports.ProcessAnswer = function(params, answerPublic = null)
     }
 }
 
+let g_bProcessingFreeMemory = false;
 async function FreeMemory()
 {
-    const date = Date.now();
+    if (g_bProcessingFreeMemory)
+        return;
 
-    let tmp = {}
-    for (let key in g_Callbacks)
-    {
-        if (g_Callbacks[key] && g_Callbacks[key].time < date - 3*60*1000)
+    g_bProcessingFreeMemory = true;
+
+    try {
+        const date = Date.now();
+
+        let tmp = {}
+        for (let key in g_Callbacks)
         {
-            try {
-                await g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
+            if (g_Callbacks[key] && g_Callbacks[key].time < date - 3*60*1000)
+            {
+                try {
+                    await g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
+                }
+                catch(e){}
+                continue;
             }
-            catch(e)
-            {}
-            continue;
+            tmp[key] = g_Callbacks[key];
         }
-        tmp[key] = g_Callbacks[key];
+        g_Callbacks = tmp;
     }
-    g_Callbacks = tmp;
+    catch(e) {}
+
+    g_bProcessingFreeMemory = false;
 }
 
 global.p2plib = function(start = true) 
