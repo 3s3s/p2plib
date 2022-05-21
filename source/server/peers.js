@@ -90,7 +90,9 @@ async function ConnectNewPeers()
     QueryNewPeers();
 
     for (let i=0; i<peers.length; i++)
+    {
         Connect(unescape(peers[i].address))
+    }
 
     for (let i=0; i<g_P2P_protocol["seeders"].length; i++)
         Connect(g_P2P_protocol["seeders"][i]);
@@ -134,16 +136,22 @@ exports.SavePeers = function(uid, list)
     
     delete g_sentUIDS[uid];
 
+    if (!list.length)
+        return;
+
     for (let i=0; i<Math.min(10, list.length); i++)
     {
-        Connect(unescape(list[i].address));
+        const address = unescape(list[i].address);
+        Connect(address);
 
         if (typeof window !== 'undefined')
-            utils.SavePeer(list[i].address, false);
+            utils.SavePeer(address, false);
     }
 
-    if (list.length == 1 && reqHandler.IsConnected(list[0].address))
-        utils.SavePeer(list[0].address); 
+    const address = unescape(list[0].address);
+
+    if (list.length == 1 && reqHandler.IsConnected(address))
+        utils.SavePeer(address); 
 }
 
 exports.IsConnected = function(peer)
