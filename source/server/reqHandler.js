@@ -71,7 +71,9 @@ exports.handleConnection = function(ws)
         if (client.params.TTL*1 >= 0 && !peers.IsOwnUID(client.params.uid))
             exports.broadcastMessage(this["remote_address"], client)
 
-        try { peers.HandleMessage(client);} catch(e) {}
+        try { peers.HandleMessage(client);} catch(e) {
+            console.log(e)
+        }
     };   
 }
 

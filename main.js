@@ -27,13 +27,6 @@ exports.GetListenPort = function()
     return g_P2P_protocol["my_portSSL"] || g_constants.my_portSSL;
 }
 
-exports.StartPeer = function(PROTOCOL = {STARTED:true, __handlers__: {}})
-{
-    peers.Init(PROTOCOL);
-
-    g_P2P_protocol = PROTOCOL;
-}
-
 exports.GetConnectedPeers = function()
 {
     return peers.GetConnectedPeers();    
@@ -154,11 +147,11 @@ global.p2plib = function(start = true)
         }
         g_P2P_protocol.STARTED = true;
 
-        exports.StartPeer(g_P2P_protocol)
+        StartPeer(g_P2P_protocol)
     }
     this.StopPeer = function() {
         g_P2P_protocol.STARTED = false;
-        exports.StartPeer(g_P2P_protocol)
+        StartPeer(g_P2P_protocol)
     }
 
     this.StartServer = function(options = null) {
@@ -184,4 +177,11 @@ global.p2plib = function(start = true)
     if (start) this.StartPeer();
 
     return this;
-}
+    
+    function StartPeer (PROTOCOL = {STARTED:true, __handlers__: {}})
+    {
+        peers.Init(PROTOCOL);
+    
+        g_P2P_protocol = PROTOCOL;
+    }
+    }

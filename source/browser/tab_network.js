@@ -1,47 +1,32 @@
 "use strict";
 
-const utils = require("../utils.js");
 const $ = require('jquery');
-const peers = require("../server/peers")
-
-const P2P_PROTOCOL = {
-    STARTED: false
-}
 
 exports.Init = function()
 {
-    ConnectP2P();
+    p2p.StartPeer();
     
     UpdatePeers();
     
     setInterval(UpdatePeers, 10000)
 }
 
-function ConnectP2P()
-{
-    P2P_PROTOCOL.STARTED = true;
-
-    peers.Init(P2P_PROTOCOL);
-}
-
 $("#network-start").on("click", e => 
 {
-    P2P_PROTOCOL.STARTED = !P2P_PROTOCOL.STARTED;
-
-    peers.Init(P2P_PROTOCOL);
+    p2p.IsStarted() ? p2p.StopPeer() : p2p.StartPeer()
 
     UpdatePeers();
 })
 
 async function UpdatePeers()
 {
-    $("#network-start").text(P2P_PROTOCOL.STARTED ? "Stop" : "Start")
+    $("#network-start").text(p2p.IsStarted() ? "Stop" : "Start")
 
-    const connected = peers.GetConnectedPeers();
-    const saved = await utils.GetPeersFromDB();
+    const connected = p2p.GetConnectedPeers();
+    const saved = await p2p.GetLastSavedPeers();
 
     $("#network-status").empty();
-    if (!P2P_PROTOCOL.STARTED)
+    if (!p2p.IsStarted())
         $("#network-status").append($("<span class='text-danger'>Offline</span>"))
     else 
     {

@@ -80,7 +80,7 @@ exports.HandleMessage = function(client)
             g_P2P_protocol["__handlers__"][message](client.params)
     }
 
-    return require("./p2p").HandleMessage(ws, client.params)
+    return require("./p2p").HandleMessage(client.params)
 }
 
 async function ConnectNewPeers()

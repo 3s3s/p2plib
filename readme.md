@@ -17,13 +17,15 @@ require("p2plib").StartServer();
 Start P2P client (will work in browser)
 
 ```
-require("p2plib").StartPeer();
+require("p2plib")
+let p2p = new p2plib()
+p2p.StartPeer();
 ```
 
 Stop P2P client 
 
 ```
-require("p2plib").StartPeer({STARTED: false});
+p2p.StopPeer();
 ```
 
 
