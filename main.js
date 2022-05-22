@@ -4,42 +4,15 @@ const server = require("./source/server/server")
 const reqHandler = require("./source/server/reqHandler")
 const peers = require("./source/server/peers")
 const utils = require("./source/utils")
-const g_constants = require("./source/constants")
 
 let g_P2P_protocol = {STARTED: false, __handlers__: {}}
 
-exports.StartServer = function(P2P_protocol = {STARTED: true, __handlers__: {}})
-{
-    if (g_P2P_protocol.STARTED) return;
-    
-    if (typeof window === 'object')
-        return console.error('Could not to start server in browser')
-
-    if (!P2P_protocol["STARTED"]) P2P_protocol["STARTED"] = true;
-    
-    g_P2P_protocol = P2P_protocol;
-
-    server.StartServer(P2P_protocol);
-}
-
-exports.GetListenPort = function()
-{
-    return g_P2P_protocol["my_portSSL"] || g_constants.my_portSSL;
-}
-
-exports.GetConnectedPeers = function()
+function GetConnectedPeers()
 {
     return peers.GetConnectedPeers();    
 }
 
-exports.GetLastSavedPeers = function()
-{
-    return new Promise(async ok => {
-        return ok(await utils.GetPeersFromDB())
-    })
-}
-
-exports.broadcastMessage = function(message)
+function broadcastMessage(message)
 {
     if (!message) return 0;
     if (!message.request || !message.request.length) return 0;
@@ -54,16 +27,15 @@ exports.broadcastMessage = function(message)
 }
 
 let g_Callbacks = {};
-
-exports.SendMessage = function(params, callback)
+function SendMessage(params, callback)
 {
     try {
-        const connected = exports.GetConnectedPeers();
+        const connected = GetConnectedPeers();
 
         if (!connected || !connected.length) throw new Error("Offline: no connected peers.")
 
         const message = {request: "custom", params: params}
-        const uid = exports.broadcastMessage(message);
+        const uid = broadcastMessage(message);
 
         if (uid) g_Callbacks[uid] = {callback: callback, time: Date.now()};
 
@@ -74,11 +46,11 @@ exports.SendMessage = function(params, callback)
     }
 }
 
-exports.ProcessAnswer = function(params, answerPublic = null)
+function ProcessAnswer(params, answerPublic = null)
 {
     if (answerPublic != null)
     {
-        exports.broadcastMessage({
+        broadcastMessage({
             request: "custom", 
             params: {
                 destination: params["uid"], 
@@ -132,14 +104,42 @@ function FreeMemory()
     g_bProcessingFreeMemory = false;
 }
 
+function StartPeer (PROTOCOL = {STARTED:true, __handlers__: {}})
+{
+    peers.Init(PROTOCOL);
+
+    g_P2P_protocol = PROTOCOL;
+}
+
+function StartServer(P2P_protocol = {STARTED: true, __handlers__: {}})
+{
+    if (g_P2P_protocol.STARTED) return;
+    
+    if (typeof window === 'object')
+        return console.error('Could not to start server in browser')
+
+    if (!P2P_protocol["STARTED"]) P2P_protocol["STARTED"] = true;
+    
+    g_P2P_protocol = P2P_protocol;
+
+    server.StartServer(g_P2P_protocol);
+}
+
+function GetLastSavedPeers()
+{
+    return new Promise(async ok => {
+        return ok(await utils.GetPeersFromDB())
+    })
+}
+
 global.p2plib = function(start = true) 
 {
-    this.GetConnectedPeers = exports.GetConnectedPeers;
-    this.GetLastSavedPeers = exports.GetLastSavedPeers;
-    this.SendMessage = exports.SendMessage;
-    this.ProcessAnswer = exports.ProcessAnswer;
-
     g_P2P_protocol["__handlers__"] = {}
+
+    this.SendMessage = SendMessage;
+    this.ProcessAnswer = ProcessAnswer;
+    this.GetLastSavedPeers = GetLastSavedPeers;
+    this.GetConnectedPeers = GetConnectedPeers;
 
     this.StartPeer = function(options = null) {
         if (options)
@@ -163,12 +163,11 @@ global.p2plib = function(start = true)
                 g_P2P_protocol[key] = options[key]
         }
         g_P2P_protocol.STARTED = false;
-
-        exports.StartServer(g_P2P_protocol)
+        StartServer(g_P2P_protocol)
     }
     this.StopServer = function() {
         g_P2P_protocol.STARTED = true;
-        exports.StartServer(g_P2P_protocol)
+        StartServer(g_P2P_protocol)
     }
     this.IsStarted = function () {return g_P2P_protocol.STARTED;}
 
@@ -180,12 +179,5 @@ global.p2plib = function(start = true)
 
     if (start) this.StartPeer();
 
-    return this;
-    
-    function StartPeer (PROTOCOL = {STARTED:true, __handlers__: {}})
-    {
-        peers.Init(PROTOCOL);
-    
-        g_P2P_protocol = PROTOCOL;
-    }
+    return this;    
 }
