@@ -198,24 +198,23 @@ function Connect(peer)
         client.onerror = function(ev) 
         {
             this["isAlive"] = false;
-            delete g_TryConnect[peer];
+            if (!!g_TryConnect[this["remote_address"]]) delete g_TryConnect[this["remote_address"]];
         };
         client.onclose = function(ev) 
         {
             this["isAlive"] = false;
-            delete g_TryConnect[peer];
+            if (!!g_TryConnect[this["remote_address"]]) delete g_TryConnect[this["remote_address"]];
 
-            utils.SavePeer(peer, false);
+            utils.SavePeer(this["remote_address"], false);
         };
 
         client.onopen = function(ev)  
         {
-            delete g_TryConnect[peer];
-
-            //g_ConnectedPeers.push(this);
             reqHandler.handleConnection(this);
 
-            utils.SavePeer(peer);
+            utils.SavePeer(this["remote_address"]);
+
+            if (!!g_TryConnect[this["remote_address"]]) delete g_TryConnect[this["remote_address"]];
         }
     }
     catch(e) {
