@@ -89,18 +89,20 @@ exports.ProcessAnswer = function(params, answerPublic = null)
         });
     }
 
-    if (params["command"] == "answer" && params["command"] == "answer" && !!g_Callbacks[params.destination] && params.values && params.values)
+    if (params["command"] == "answer" && !!g_Callbacks[params.destination] && !!params.values)
     {
         try {
             g_Callbacks[params.destination].time = 0;
             g_Callbacks[params.destination].callback(params.values);
         }
-        catch(e) {}
+        catch(e) {
+            console.log(e)
+        }
     }
 }
 
 let g_bProcessingFreeMemory = false;
-async function FreeMemory()
+function FreeMemory()
 {
     if (g_bProcessingFreeMemory)
         return;
@@ -116,7 +118,7 @@ async function FreeMemory()
             if (g_Callbacks[key] && g_Callbacks[key].time < date - 3*60*1000)
             {
                 try {
-                    await g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
+                    g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
                 }
                 catch(e){}
                 continue;

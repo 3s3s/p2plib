@@ -134,7 +134,8 @@ exports.SavePeers = function(uid, list)
     if (!exports.IsOwnUID(uid))
         return;
     
-    delete g_sentUIDS[uid];
+    g_sentUIDS[uid].time = 0;
+    ClearMemory();
 
     if (!list.length)
         return;
@@ -198,12 +199,12 @@ function Connect(peer)
         client.onerror = function(ev) 
         {
             this["isAlive"] = false;
-            if (!!g_TryConnect[this["remote_address"]]) delete g_TryConnect[this["remote_address"]];
+            if (!!g_TryConnect[this["remote_address"]]) g_TryConnect[this["remote_address"]].time = 0;
         };
         client.onclose = function(ev) 
         {
             this["isAlive"] = false;
-            if (!!g_TryConnect[this["remote_address"]]) delete g_TryConnect[this["remote_address"]];
+            if (!!g_TryConnect[this["remote_address"]]) g_TryConnect[this["remote_address"]].time = 0;
 
             utils.SavePeer(this["remote_address"], false);
         };
@@ -214,7 +215,7 @@ function Connect(peer)
 
             utils.SavePeer(this["remote_address"]);
 
-            if (!!g_TryConnect[this["remote_address"]]) delete g_TryConnect[this["remote_address"]];
+            if (!!g_TryConnect[this["remote_address"]]) g_TryConnect[this["remote_address"]].time = 0;
         }
     }
     catch(e) {
