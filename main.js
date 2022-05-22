@@ -174,6 +174,8 @@ global.p2plib = function(start = true)
 
     this.on = function(message, handler) {
         g_P2P_protocol["__handlers__"][message] = handler;
+
+        peers.UpdateProtocol(g_P2P_protocol);
     }
 
     if (start) this.StartPeer();

@@ -15,9 +15,16 @@ exports.IsOwnUID = function(uid)
     return false;
 }
 
-exports.Init = async function(P2P_protocol = {STARTED: true})
+let g_P2P_protocol = null;
+
+exports.UpdateProtocol = function(P2P_protocol)
 {
     g_P2P_protocol = P2P_protocol;
+}
+
+exports.Init = async function(P2P_protocol = {STARTED: true})
+{
+    exports.UpdateProtocol(P2P_protocol);
 
     if (g_P2P_protocol)
     {
