@@ -142,6 +142,7 @@ global.p2plib = function(start = true)
     this.ProcessAnswer = ProcessAnswer;
     this.GetLastSavedPeers = GetLastSavedPeers;
     this.GetConnectedPeers = GetConnectedPeers;
+    this.broadcastMessage = broadcastMessage;
 
     this.StartPeer = function(options = null) {
         if (options)
