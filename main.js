@@ -4,6 +4,7 @@ const server = require("./source/server/server")
 const reqHandler = require("./source/server/reqHandler")
 const peers = require("./source/server/peers")
 const utils = require("./source/utils")
+const g_constants = require("./source/constants")
 
 let g_P2P_protocol = {STARTED: false, __handlers__: {}}
 
