@@ -89,13 +89,13 @@ exports.ProcessAnswer = function(params, answerPublic = null)
         });
     }
 
-    if (params["command"] == "answer" && !!g_Callbacks[params.destination] && params.values)
+    if (params["command"] == "answer" && params["command"] == "answer" && !!g_Callbacks[params.destination] && params.values && params.values)
     {
         try {
+            g_Callbacks[params.destination].time = 0;
             g_Callbacks[params.destination].callback(params.values);
         }
         catch(e) {}
-        delete g_Callbacks[params.destination];
     }
 }
 
@@ -184,4 +184,4 @@ global.p2plib = function(start = true)
     
         g_P2P_protocol = PROTOCOL;
     }
-    }
+}
