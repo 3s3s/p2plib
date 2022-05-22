@@ -67,7 +67,7 @@ function ProcessAnswer(params, answerPublic = null)
         });
     }
 
-    if (params["command"] == "answer" && !!g_Callbacks[params.destination] && !!params.values)
+    /*if (params["command"] == "answer" && !!g_Callbacks[params.destination] && !!params.values)
     {
         try {
             g_Callbacks[params.destination].time = 0;
@@ -76,7 +76,7 @@ function ProcessAnswer(params, answerPublic = null)
         catch(e) {
             console.log(e)
         }
-    }
+    }*/
 }
 
 let g_bProcessingFreeMemory = false;
@@ -187,6 +187,19 @@ global.p2plib = function(start = true)
 
         peers.UpdateProtocol(g_P2P_protocol);
     }
+
+    this.on("answer", params => {
+        if (!!g_Callbacks[params.destination] && !!params.values)
+        {
+            try {
+                g_Callbacks[params.destination].time = 0;
+                g_Callbacks[params.destination].callback(params.values);
+            }
+            catch(e) {
+                console.log(e)
+            }
+        }    
+    })
 
     if (start) this.StartPeer();
 

@@ -3,9 +3,7 @@
 const $ = require('jquery');
 
 exports.Init = function()
-{
-    p2p.StartPeer();
-    
+{   
     UpdatePeers();
     
     setInterval(UpdatePeers, 10000)

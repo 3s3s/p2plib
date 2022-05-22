@@ -46,6 +46,11 @@ exports.handleConnection = function(ws)
             return console.log(e);
         }
 
+        /*if (client.request != "p2p" && client.params.command == "answer" && !client.params.values.orders)
+        {
+            const i = 1;
+        }*/
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
         if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
