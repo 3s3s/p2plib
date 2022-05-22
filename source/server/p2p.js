@@ -24,6 +24,6 @@ exports.HandleMessage = async function(params)
                 break;
             }
         }    
-        return __p2p__.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
+        return __p2p__.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+__p2p__.GetListenPort()}] } });
     }     
 }

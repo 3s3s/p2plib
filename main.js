@@ -7,6 +7,11 @@ const utils = require("./source/utils")
 
 let g_P2P_protocol = {STARTED: false, __handlers__: {}}
 
+function GetListenPort()
+{
+    return g_P2P_protocol["my_portSSL"] || g_constants.my_portSSL;
+}
+
 function GetConnectedPeers()
 {
     return peers.GetConnectedPeers();    
@@ -142,7 +147,9 @@ global.p2plib = function(start = true)
     this.ProcessAnswer = ProcessAnswer;
     this.GetLastSavedPeers = GetLastSavedPeers;
     this.GetConnectedPeers = GetConnectedPeers;
+    
     this.broadcastMessage = broadcastMessage;
+    this.GetListenPort = GetListenPort;
 
     this.StartPeer = function(options = null) {
         if (options)
