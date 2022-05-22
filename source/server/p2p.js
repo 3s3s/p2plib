@@ -1,6 +1,5 @@
 'use strict';
 
-const p2p = require("../../main")
 const peers = require("./peers")
 
 exports.HandleMessage = async function(params)
@@ -8,7 +7,7 @@ exports.HandleMessage = async function(params)
     if (!params || !params.command) return;
 
     if (params.command == "getPeers")
-        return p2p.broadcastMessage({request: "p2p", params: {destination: params.uid, command: "listPeers", list: await p2p.GetLastSavedPeers() } }) 
+        return __p2p__.broadcastMessage({request: "p2p", params: {destination: params.uid, command: "listPeers", list: await p2p.GetLastSavedPeers() } }) 
     
     if (params.command == "listPeers" && params.list && params.list.length && params.destination)
         return peers.SavePeers(params.destination, params.list);
@@ -25,6 +24,6 @@ exports.HandleMessage = async function(params)
                 break;
             }
         }    
-        return p2p.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
+        return __p2p__.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+p2p.GetListenPort()}] } });
     }     
 }

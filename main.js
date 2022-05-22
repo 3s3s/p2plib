@@ -134,6 +134,8 @@ function GetLastSavedPeers()
 
 global.p2plib = function(start = true) 
 {
+    global.__p2p__ = this;
+
     g_P2P_protocol["__handlers__"] = {}
 
     this.SendMessage = SendMessage;
@@ -180,4 +182,4 @@ global.p2plib = function(start = true)
     if (start) this.StartPeer();
 
     return this;    
-}
+} 
