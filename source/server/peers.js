@@ -80,7 +80,6 @@ exports.HandleMessage = function(client)
 
     if (!!g_P2P_protocol && !!g_P2P_protocol.STARTED && !!client.params["uid"])
     {
-        //g_P2P_protocol[client.request].HandleMessage(client.params);
         const message = client.params["command"];
         if (!!g_P2P_protocol["__handlers__"] && !!g_P2P_protocol["__handlers__"][message])
             g_P2P_protocol["__handlers__"][message](client.params)
@@ -96,9 +95,7 @@ async function ConnectNewPeers()
     QueryNewPeers();
 
     for (let i=0; i<peers.length; i++)
-    {
         Connect(unescape(peers[i].address))
-    }
 
     for (let i=0; i<g_P2P_protocol["seeders"].length; i++)
         Connect(g_P2P_protocol["seeders"][i]);

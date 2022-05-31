@@ -153,6 +153,8 @@ global.p2plib = function(start = true)
     this.GetListenPort = GetListenPort;
 
     this.StartPeer = function(options = null) {
+        if (g_P2P_protocol.STARTED)
+            return;
         if (options)
         {
             for (let key in options)
@@ -167,7 +169,7 @@ global.p2plib = function(start = true)
         StartPeer(g_P2P_protocol)
     }
 
-    this.StartServer = function(options = null) {
+    this.StartServer = function(options = null) {          
         if (options)
         {
             for (let key in options)
