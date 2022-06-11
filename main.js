@@ -71,6 +71,7 @@ function ProcessAnswer(params, answerPublic = null)
     {
         try {
             g_Callbacks[params.destination].time = 0;
+            g_Callbacks[params.destination]["processed"] = true;
             g_Callbacks[params.destination].callback(params.values);
         }
         catch(e) {
@@ -96,7 +97,8 @@ function FreeMemory()
             if (g_Callbacks[key] && g_Callbacks[key].time < date - 3*60*1000)
             {
                 try {
-                    g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
+                    if (!g_Callbacks[params.destination]["processed"])
+                        g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
                 }
                 catch(e){}
                 continue;
