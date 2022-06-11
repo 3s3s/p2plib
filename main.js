@@ -67,7 +67,7 @@ function ProcessAnswer(params, answerPublic = null)
         });
     }
 
-    if (params["command"] == "answer" && !!g_Callbacks[params.destination] && !!params.values)
+    if (params["command"] == "answer" && !!g_Callbacks[params.destination] && !!params.values && !!g_Callbacks[params.destination].time && !!g_Callbacks[params.destination].callback)
     {
         try {
             g_Callbacks[params.destination].time = 0;
