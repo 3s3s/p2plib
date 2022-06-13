@@ -15,9 +15,9 @@
     "compile_lib": "browserify ./main.js > ./browser/js/p2plib.js",
     "compile_debug": "browserify --debug ./source/browser/main.js > ./browser/js/main.js",
     "compile_debug_lib": "browserify --debug ./main.js > ./browser/js/p2plib_d.js",
-    "server": "node ./source/server/server.js",
-    "daemon": "forever -s start ./source/server/server.js",
-    "daemon_stop": "forever stop ./source/server/server.js"
+    "server": "node ./server.js",
+    "daemon": "forever -s start ./server.js",
+    "daemon_stop": "forever stop ./server.js"
   },
   "repository": {
     "type": "git",
