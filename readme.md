@@ -11,14 +11,18 @@ Usage:
 Start P2P server (will not work in browser)
 
 ```
-require("p2plib").StartServer();
+require("p2plib");
+
+const server = new p2plib(false);
+server.StartServer()
 ```
 
 Start P2P client (will work in browser)
 
 ```
 require("p2plib")
-let p2p = new p2plib()
+
+const  p2p = new p2plib()
 p2p.StartPeer();
 ```
 

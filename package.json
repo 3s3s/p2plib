@@ -1,6 +1,6 @@
 {
   "name": "p2plib",
-  "version": "1.0.83",
+  "version": "1.0.84",
   "description": "Easy to use P2P library for any projects",
   "main": "main.js",
   "dependencies": {
@@ -15,9 +15,9 @@
     "compile_lib": "browserify ./main.js > ./browser/js/p2plib.js",
     "compile_debug": "browserify --debug ./source/browser/main.js > ./browser/js/main.js",
     "compile_debug_lib": "browserify --debug ./main.js > ./browser/js/p2plib_d.js",
-    "server": "node ./source/server/main.js",
-    "daemon": "forever -s start ./source/server/main.js",
-    "daemon_stop": "forever stop ./source/server/main.js"
+    "server": "node ./source/server/server.js",
+    "daemon": "forever -s start ./source/server/server.js",
+    "daemon_stop": "forever stop ./source/server/server.js"
   },
   "repository": {
     "type": "git",

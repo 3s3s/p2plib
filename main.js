@@ -140,6 +140,8 @@ function GetLastSavedPeers()
     })
 }
 
+global.__p2p__ = null;
+
 global.p2plib = function(start = true) 
 {
     global.__p2p__ = this;
