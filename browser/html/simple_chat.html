@@ -64,18 +64,18 @@
     <script src="https://3s3s.github.io/p2plib/browser/js/p2plib_d.js"></script>
     
     <script>
-      let p2p = new p2plib()
+      let P2P = new p2plib()
 
       $("#checkDelivered").prop( "checked", false );
 
       setInterval(() => {
-        $("#connectionStatus").text(p2p.GetConnectedPeers().length > 0 ? "Connected" : "Offline")
+        $("#connectionStatus").text(P2P.GetConnectedPeers().length > 0 ? "Connected" : "Offline")
       }, 5000)
 
       $("#sendMessageButton").on("click", e => {
         $("#checkDelivered").prop( "checked", false );
         $("#labelDelivered").empty()
-        p2p.SendMessage({command: "SendText", userFrom: $("#localUser").val(), userTo: $("#remoteUser").val(), text: $("#messageText").val()}, ret => {
+        P2P.SendMessage({command: "SendText", userFrom: $("#localUser").val(), userTo: $("#remoteUser").val(), text: $("#messageText").val()}, ret => {
           try {
             if (ret.result == true && 
                 ret.params["userFrom"] == $("#localUser").val() && 
@@ -93,16 +93,13 @@
         })
       })
 
-      p2p.on("SendText", async params => {
-        let answer = null;
-        if (params["userTo"] == $("#localUser").val())
-        {
-          const newText = $("#messages").val()+"@"+params["userFrom"]+": "+params["text"]+"\n";
-          $("#messages").val(newText)
-          answer = {result: true, params: params}
-        }
+      P2P.on("SendText", async params => 
+      {        
+        const newText = $("#messages").val()+"@"+params["userFrom"]+" -> @"+params["userTo"]+": "+params["text"]+"\n";
+        $("#messages").val(newText)
+        answer = {result: true, params: params}
 
-        return p2p.ProcessAnswer(params, answer)
+        return P2P.ProcessAnswer(params, answer)
       })
 
     </script>
