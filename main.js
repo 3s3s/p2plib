@@ -97,19 +97,24 @@ function FreeMemory()
             if (g_Callbacks[key] && g_Callbacks[key].time < date - 3*60*1000)
             {
                 try {
-                    if (!g_Callbacks[params.destination]["processed"])
+                    if (!g_Callbacks[key]["processed"])
                         g_Callbacks[key].callback({__result__: false, __message__: "p2plib timeout"});
                 }
-                catch(e){}
+                catch(e){
+                    console.log(e)
+                }
                 continue;
             }
             tmp[key] = g_Callbacks[key];
         }
         g_Callbacks = tmp;
     }
-    catch(e) {}
+    catch(e) {
+        console.log(e)
+    }
 
     g_bProcessingFreeMemory = false;
+    setTimeout(FreeMemory, 60*1000)
 }
 
 function StartPeer (PROTOCOL = {STARTED:true, __handlers__: {}})
