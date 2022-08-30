@@ -4,7 +4,7 @@ const peers = require("./peers")
 
 exports.HandleMessage = async function(params)
 {
-    if (!params || !params.command || !global.__p2p__) return;
+    if (!params || !params.command || !global["__p2p__"]) return;
 
     if (params.command == "getPeers")
         return __p2p__.broadcastMessage({request: "p2p", params: {destination: params.uid, command: "listPeers", list: await __p2p__.GetLastSavedPeers() } }) 
