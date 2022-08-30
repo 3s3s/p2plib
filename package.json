@@ -6,6 +6,7 @@
   "dependencies": {
     "ip": "^1.1.5",
     "isomorphic-ws": "^4.0.1",
+    "sodium-universal": "^3.1.0",
     "sqlite3": "^5.0.2",
     "ws": "^8.4.2"
   },

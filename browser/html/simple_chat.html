@@ -69,18 +69,20 @@
       $("#checkDelivered").prop( "checked", false );
 
       setInterval(() => {
-        $("#connectionStatus").html(P2P.GetConnectedPeers().length > 0 ? "<span class='text-success'>Connected</span>" : "<span class='text-danger'>Offline</span>")
+        $("#connectionStatus").html(P2P.GetConnectedPeers().length > 0 ? `<span class='text-success'>Connected (${P2P.GetConnectedPeers().length}) peers</span>` : "<span class='text-danger'>Offline</span>")
       }, 5000)
 
       $("#sendMessageButton").on("click", e => {
         $("#checkDelivered").prop( "checked", false );
         $("#labelDelivered").empty()
-        P2P.SendMessage({command: "SendText", userFrom: $("#localUser").val(), userTo: $("#remoteUser").val(), text: $("#messageText").val()}, ret => {
+
+        const users = {from: $("#localUser").val(), to: $("#remoteUser").val()};    
+        P2P.SendMessage({command: "SendText", userFrom: users.from, userTo: users.to, text: P2P.EncryptText($("#messageText").val(), users.to)}, ret => {
           try {
             if (ret.result == true && 
-                ret.params["userFrom"] == $("#localUser").val() && 
-                ret.params["userTo"] == $("#remoteUser").val() &&
-                ret.params["text"] == $("#messageText").val())
+                ret.params["userFrom"] == users.from && 
+                ret.params["userTo"] == users.to &&
+                ret.params["text"] == P2P.DecryptText($("#messageText").val(), users.to))
             {
               $("#messageText").val("")
               $("#checkDelivered").prop( "checked", true );
@@ -94,11 +96,19 @@
       })
 
       P2P.on("SendText", async params => 
-      {        
-        const newText = $("#messages").val()+"@"+params["userFrom"]+" -> @"+params["userTo"]+": "+params["text"]+"\n";
-        $("#messages").val(newText)
-        answer = {result: true, params: params}
-
+      {     
+        try {  
+          const decryptedText = P2P.DecryptText(params["text"], $("#localUser").val());
+          if (params["userFrom"] == $("#localUser").val() && decryptedText != null) 
+          {
+            const newText = $("#messages").val()+"@"+params["userFrom"]+" -> @"+params["userTo"]+": "+decryptedText+"\n";
+            $("#messages").val(newText)
+            answer = {result: true, params: params}
+          }
+        }
+        catch {
+          console.log(e)
+        }
         return P2P.ProcessAnswer(params, answer)
       })
 

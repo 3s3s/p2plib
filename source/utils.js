@@ -1,6 +1,7 @@
 'use strict';
 
 const g_crypto = require('crypto');
+const sodium = require('sodium-universal')
 const g_constants = require('./constants')
 
 let g_lastClear = 0;
@@ -159,3 +160,43 @@ exports.storage = {
     stor.setItem(key, JSON.stringify(value));
   }
 };
+
+exports.Encrypt = function(text, password)
+{
+  if (password.length < 2) throw new Error("too short password");
+  
+  const nonce = Buffer.alloc(sodium.crypto_secretbox_NONCEBYTES, 0);   
+  const MESSAGE = Buffer.from(text);
+  let key = Buffer.alloc(sodium.crypto_secretbox_KEYBYTES);
+
+  sodium.crypto_generichash(key, Buffer.from(password));
+
+  let ciphertext = Buffer.alloc(MESSAGE.length + sodium.crypto_secretbox_MACBYTES);
+
+  sodium.crypto_secretbox_easy(ciphertext, MESSAGE, nonce, key);
+  ////////////////////////////////////////////////////////////////////////////
+  /*let message = Buffer.alloc(ciphertext.length - sodium.crypto_secretbox_MACBYTES);
+
+  sodium.crypto_secretbox_open_easy(message, ciphertext, nonce, key);*/
+  ////////////////////////////////////////////////////////////////////////////
+
+  if (exports.Decrypt(ciphertext.toString('hex'), password) != text) throw new Error("Encrypt error")
+
+  return ciphertext.toString('hex');
+}
+
+exports.Decrypt = function(text, password)
+{
+  const nonce = Buffer.alloc(sodium.crypto_secretbox_NONCEBYTES, 0);  
+  const ciphertext = Buffer.from(text, 'hex');
+  let key = Buffer.alloc(sodium.crypto_secretbox_KEYBYTES); 
+
+  sodium.crypto_generichash(key, Buffer.from(password));
+  
+  let message = Buffer.alloc(ciphertext.length - sodium.crypto_secretbox_MACBYTES);
+
+  if (!sodium.crypto_secretbox_open_easy(message, ciphertext, nonce, key))
+    return null;
+
+  return message.toString();
+}

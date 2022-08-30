@@ -161,6 +161,9 @@ global.p2plib = function(start = true)
     this.broadcastMessage = broadcastMessage;
     this.GetListenPort = GetListenPort;
 
+    this.EncryptText = utils.Encrypt;
+    this.DecryptText = utils.Decrypt;
+
     this.StartPeer = function(options = null) {
         if (g_P2P_protocol.STARTED)
             return;
