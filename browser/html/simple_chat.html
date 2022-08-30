@@ -69,7 +69,7 @@
       $("#checkDelivered").prop( "checked", false );
 
       setInterval(() => {
-        $("#connectionStatus").text(P2P.GetConnectedPeers().length > 0 ? "<span class='text-success'>Connected</span>" : "<span class='text-danger'>Offline</span>")
+        $("#connectionStatus").html(P2P.GetConnectedPeers().length > 0 ? "<span class='text-success'>Connected</span>" : "<span class='text-danger'>Offline</span>")
       }, 5000)
 
       $("#sendMessageButton").on("click", e => {
