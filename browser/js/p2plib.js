@@ -32889,7 +32889,6 @@ function GetConnectedPeers()
 function broadcastMessage(message)
 {
     if (!message) return 0;
-    if (!message.request || !message.request.length) return 0;
     if (!message.params) return 0;
     
     if (!message.params["TTL"] && message.params["TTL"] !== 0) message.params["TTL"] = 3;
@@ -32908,7 +32907,7 @@ function SendMessage(params, callback)
 
         if (!connected || !connected.length) throw new Error("Offline: no connected peers.")
 
-        const message = {request: "custom", params: params}
+        const message = {params: params}
         const uid = broadcastMessage(message);
 
         if (uid) g_Callbacks[uid] = {callback: callback, time: Date.now()};
@@ -32925,7 +32924,6 @@ function ProcessAnswer(params, answerPublic = null)
     if (answerPublic != null)
     {
         broadcastMessage({
-            request: "custom", 
             params: {
                 destination: params["uid"], 
                 command: "answer", 
@@ -53263,7 +53261,7 @@ exports.HandleMessage = async function(params)
     if (!params || !params.command || !global["__p2p__"]) return;
 
     if (params.command == "getPeers")
-        return __p2p__.broadcastMessage({request: "p2p", params: {destination: params.uid, command: "listPeers", list: await __p2p__.GetLastSavedPeers() } }) 
+        return __p2p__.broadcastMessage({params: {destination: params.uid, command: "listPeers", list: await __p2p__.GetLastSavedPeers() } }) 
     
     if (params.command == "listPeers" && params.list && params.list.length && params.destination)
         return peers.SavePeers(params.destination, params.list);
@@ -53280,7 +53278,7 @@ exports.HandleMessage = async function(params)
                 break;
             }
         }    
-        return __p2p__.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+__p2p__.GetListenPort()}] } });
+        return __p2p__.broadcastMessage({params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+__p2p__.GetListenPort()}] } });
     }     
 }
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -53398,14 +53396,14 @@ exports.createUID = function()
 
 function QueryNewPeers()
 {
-    reqHandler.broadcastMessage("", {request: "p2p", params: {command: "getPeers", uid: exports.createUID(), TTL: 3} })
+    reqHandler.broadcastMessage("", {params: {command: "getPeers", uid: exports.createUID(), TTL: 3} })
 
     ClearMemory()
 }
 
 exports.GetPort = function(ws)
 {
-    const responce = {request: "p2p", params: {command: "getPort", uid: exports.createUID(), TTL: 0, address: ws["remote_address"]} };
+    const responce = {params: {command: "getPort", uid: exports.createUID(), TTL: 0, address: ws["remote_address"]} };
 
     if (ws.readyState === WebSocket.OPEN) 
         return ws.send(JSON.stringify(responce));    
@@ -53575,12 +53573,12 @@ const utils = require("../utils")
 const g_constants = require("../constants")
 const peers = require("./peers")
 
-/* WebSocket message JSON format: {request: "p2p", params: {command: "getPeers", uid: "qwert", TTL: 3, ...} } 
+/* WebSocket message JSON format: {params: {command: "getPeers", uid: "qwert", TTL: 3, ...} } 
 
 Supported p2p commands:
-getPeers - requesting peers from P2P network. Example: {request: "p2p", params: {command: "getPeers", uid: "qwert", TTL: 3, ...} 
-listPeers - returned list of peers. Example: {request: "p2p", params: {command: "listPeers", uid: "qwert", TTL: 3, list: [1.1.1.1:10443, 1.2.3.4:10443, ...] } } 
-getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
+getPeers - requesting peers from P2P network. Example: {params: {command: "getPeers", uid: "qwert", TTL: 3, ...} 
+listPeers - returned list of peers. Example: {params: {command: "listPeers", uid: "qwert", TTL: 3, list: ["1.1.1.1:10443", "1.2.3.4:10443", ...] } } 
+getPort - request a listen port for remote connected client (with known IP address). Example: {params: {command: "getPort", uid: "qwert", TTL: 0, address: "1.2.3.4"} } 
 */
 let g_knownUIDs = {}
 exports.handleConnection = function(ws)
@@ -53616,14 +53614,9 @@ exports.handleConnection = function(ws)
             return console.log(e);
         }
 
-        /*if (client.request != "p2p" && client.params.command == "answer" && !client.params.values.orders)
-        {
-            const i = 1;
-        }*/
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
-        if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
+        if (!client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         this["isAlive"] = true;
