@@ -21,7 +21,6 @@ function GetConnectedPeers()
 function broadcastMessage(message)
 {
     if (!message) return 0;
-    if (!message.request || !message.request.length) return 0;
     if (!message.params) return 0;
     
     if (!message.params["TTL"] && message.params["TTL"] !== 0) message.params["TTL"] = 3;
@@ -40,7 +39,7 @@ function SendMessage(params, callback)
 
         if (!connected || !connected.length) throw new Error("Offline: no connected peers.")
 
-        const message = {request: "custom", params: params}
+        const message = {params: params}
         const uid = broadcastMessage(message);
 
         if (uid) g_Callbacks[uid] = {callback: callback, time: Date.now()};
@@ -57,7 +56,6 @@ function ProcessAnswer(params, answerPublic = null)
     if (answerPublic != null)
     {
         broadcastMessage({
-            request: "custom", 
             params: {
                 destination: params["uid"], 
                 command: "answer", 

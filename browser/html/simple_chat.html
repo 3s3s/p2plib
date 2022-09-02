@@ -96,20 +96,20 @@
       })
 
       P2P.on("SendText", async params => 
-      {     
+      {    
         try {  
           const decryptedText = P2P.DecryptText(params["text"], $("#localUser").val());
-          if (params["userFrom"] == $("#localUser").val() && decryptedText != null) 
+          if (decryptedText != null) 
           {
             const newText = $("#messages").val()+"@"+params["userFrom"]+" -> @"+params["userTo"]+": "+decryptedText+"\n";
             $("#messages").val(newText)
-            answer = {result: true, params: params}
+            return P2P.ProcessAnswer({result: true, params: params}, answer)
           }
         }
         catch {
           console.log(e)
+          return P2P.ProcessAnswer({result: false, params: params, message: e.message}, answer)
         }
-        return P2P.ProcessAnswer(params, answer)
       })
 
     </script>

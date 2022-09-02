@@ -111,14 +111,14 @@ exports.createUID = function()
 
 function QueryNewPeers()
 {
-    reqHandler.broadcastMessage("", {request: "p2p", params: {command: "getPeers", uid: exports.createUID(), TTL: 3} })
+    reqHandler.broadcastMessage("", {params: {command: "getPeers", uid: exports.createUID(), TTL: 3} })
 
     ClearMemory()
 }
 
 exports.GetPort = function(ws)
 {
-    const responce = {request: "p2p", params: {command: "getPort", uid: exports.createUID(), TTL: 0, address: ws["remote_address"]} };
+    const responce = {params: {command: "getPort", uid: exports.createUID(), TTL: 0, address: ws["remote_address"]} };
 
     if (ws.readyState === WebSocket.OPEN) 
         return ws.send(JSON.stringify(responce));    

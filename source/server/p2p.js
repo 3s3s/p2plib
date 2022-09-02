@@ -7,7 +7,7 @@ exports.HandleMessage = async function(params)
     if (!params || !params.command || !global["__p2p__"]) return;
 
     if (params.command == "getPeers")
-        return __p2p__.broadcastMessage({request: "p2p", params: {destination: params.uid, command: "listPeers", list: await __p2p__.GetLastSavedPeers() } }) 
+        return __p2p__.broadcastMessage({params: {destination: params.uid, command: "listPeers", list: await __p2p__.GetLastSavedPeers() } }) 
     
     if (params.command == "listPeers" && params.list && params.list.length && params.destination)
         return peers.SavePeers(params.destination, params.list);
@@ -24,6 +24,6 @@ exports.HandleMessage = async function(params)
                 break;
             }
         }    
-        return __p2p__.broadcastMessage({request: "p2p", params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+__p2p__.GetListenPort()}] } });
+        return __p2p__.broadcastMessage({params: {command: "listPeers", destination: params.uid, TTL: 0, list: [{address: address+":"+__p2p__.GetListenPort()}] } });
     }     
 }

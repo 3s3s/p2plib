@@ -5,12 +5,12 @@ const utils = require("../utils")
 const g_constants = require("../constants")
 const peers = require("./peers")
 
-/* WebSocket message JSON format: {request: "p2p", params: {command: "getPeers", uid: "qwert", TTL: 3, ...} } 
+/* WebSocket message JSON format: {params: {command: "getPeers", uid: "qwert", TTL: 3, ...} } 
 
 Supported p2p commands:
-getPeers - requesting peers from P2P network. Example: {request: "p2p", params: {command: "getPeers", uid: "qwert", TTL: 3, ...} 
-listPeers - returned list of peers. Example: {request: "p2p", params: {command: "listPeers", uid: "qwert", TTL: 3, list: [1.1.1.1:10443, 1.2.3.4:10443, ...] } } 
-getPort - request a listen port for remote connected client (with known IP address). Example: {request: "p2p", params: {command: "getPort", uid: "qwert", TTL: 0, address: 1.2.3.4} } 
+getPeers - requesting peers from P2P network. Example: {params: {command: "getPeers", uid: "qwert", TTL: 3, ...} 
+listPeers - returned list of peers. Example: {params: {command: "listPeers", uid: "qwert", TTL: 3, list: ["1.1.1.1:10443", "1.2.3.4:10443", ...] } } 
+getPort - request a listen port for remote connected client (with known IP address). Example: {params: {command: "getPort", uid: "qwert", TTL: 0, address: "1.2.3.4"} } 
 */
 let g_knownUIDs = {}
 exports.handleConnection = function(ws)
@@ -46,14 +46,9 @@ exports.handleConnection = function(ws)
             return console.log(e);
         }
 
-        /*if (client.request != "p2p" && client.params.command == "answer" && !client.params.values.orders)
-        {
-            const i = 1;
-        }*/
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //Check request syntax
-        if (!client.request || !client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
+        if (!client.params || !client.params.uid || client.params.TTL*1 > 4 || client.params.TTL*1 < 0) return;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         this["isAlive"] = true;
