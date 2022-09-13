@@ -33,14 +33,17 @@ exports.StartServer = function(P2P_protocol =  {STARTED: true})
     const interval = setInterval(() => {
             g_constants.WEB_SOCKETS.clients.forEach(ws => {
             if (ws["isAlive"] === false) 
-                return ws.terminate();
+            {
+                ws.terminate();
+                return g_constants.WEB_SOCKETS.clients.delete(ws)
+            }
         
             ws["isAlive"] = false;
         });
     }, 30000);
 
     g_constants.WEB_SOCKETS.on('connection', (ws, req) => {
-        if (g_constants.WEB_SOCKETS.clients.length > 100)
+        if (g_constants.WEB_SOCKETS.clients.size > 100)
             return ws.terminate();
 
         let connectedToMe = 0;
